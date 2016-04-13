@@ -3,4 +3,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="enter_wifi_name">Please enter your wifi name</string>
+    <string name="save">Save</string>
 </resources>
