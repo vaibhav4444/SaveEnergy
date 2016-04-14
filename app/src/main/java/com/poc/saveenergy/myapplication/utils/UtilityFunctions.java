@@ -15,6 +15,12 @@ public class UtilityFunctions {
             mBluetoothAdapter.enable();
         }
     }
+    public static void disableBT(){
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter.isEnabled()){
+            mBluetoothAdapter.disable();
+        }
+    }
     public static String getWiFiName(Context context){
         WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();

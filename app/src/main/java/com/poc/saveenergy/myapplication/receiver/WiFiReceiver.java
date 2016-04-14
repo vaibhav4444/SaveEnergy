@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,8 +33,19 @@ public class WiFiReceiver extends BroadcastReceiver {
 
         }
         else{
+            final Context context1 = context;
+            new Handler().postAtTime(new Runnable() {
+                @Override
+                public void run() {
+                    String ssid = UtilityFunctions.getWiFiName(context1);
+                    if(ssid != null && ssid.contains("known")){
+                        UtilityFunctions.disableBT();
+
+                    }
+                }
+            }, 19000);
             Log.i("this","not connected");
-            String ssid = UtilityFunctions.getWiFiName(context);
+
         }
     }
 }
