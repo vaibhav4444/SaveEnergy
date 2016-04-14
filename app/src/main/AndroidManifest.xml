@@ -3,6 +3,8 @@
     package="com.poc.saveenergy.myapplication" >
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
         android:name=".application.SaveEnergy"
@@ -22,6 +24,12 @@
         <receiver android:name=".receiver.WiFiReceiver" >
             <intent-filter android:priority="100">
                 <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.BluetoothDeviceReceiver">
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.ACTION_FOUND"/>
+                <action android:name="android.bluetooth.adapter.action.ACTION_DISCOVERY_FINISHED"/>
             </intent-filter>
         </receiver>
     </application>
