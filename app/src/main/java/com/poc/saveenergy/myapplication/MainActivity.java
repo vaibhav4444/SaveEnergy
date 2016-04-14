@@ -2,16 +2,23 @@ package com.poc.saveenergy.myapplication;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.poc.saveenergy.myapplication.application.SaveEnergy;
+import com.poc.saveenergy.myapplication.constants.Constants;
 
 public class MainActivity extends AppCompatActivity {
-
+    private EditText editText_WiFiName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        editText_WiFiName = (EditText) findViewById(R.id.edtWifiName);
     }
 
     @Override
@@ -36,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void onClick(View v){
+        if(TextUtils.isEmpty(editText_WiFiName.getText().toString())){
+            editText_WiFiName.setError("Enter wifi name");
+            return;
+        }
+        SaveEnergy.getInstance().getPrefs().put(Constants.PREF_KEY_WIFI_NAME, editText_WiFiName.getText().toString());
+        Toast.makeText(this, "Saved:"+SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME), Toast.LENGTH_LONG).show();
 
     }
 }

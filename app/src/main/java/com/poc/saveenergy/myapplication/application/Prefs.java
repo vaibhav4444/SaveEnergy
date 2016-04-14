@@ -14,8 +14,8 @@ public class Prefs {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
     }
-    public void get(String key){
-        sharedPreferences.getString(key, null);
+    public String get(String key){
+        return sharedPreferences.getString(key, null);
     }
     public void put(String key,String value){
         SharedPreferences.Editor editor = sharedPreferences.edit();
