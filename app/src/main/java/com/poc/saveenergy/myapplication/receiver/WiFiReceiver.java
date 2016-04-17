@@ -28,12 +28,8 @@ public class WiFiReceiver extends BroadcastReceiver {
 
             String ssid = UtilityFunctions.getWiFiName(context);
             if(ssid != null && ssid.contains(SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME).toLowerCase())){
-                Toast.makeText(SaveEnergy.getInstance(), "Connected", Toast.LENGTH_LONG).show();
-                UtilityFunctions.enableBT();
-                Intent discoverableIntent = new
-                        Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                context.startActivity(discoverableIntent);
+               // Toast.makeText(SaveEnergy.getInstance(), "Connected", Toast.LENGTH_LONG).show();
+                UtilityFunctions.enableBT(context);
             }
 
         }
