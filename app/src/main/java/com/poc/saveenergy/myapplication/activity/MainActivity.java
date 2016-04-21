@@ -1,4 +1,4 @@
-package com.poc.saveenergy.myapplication;
+package com.poc.saveenergy.myapplication.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -12,17 +12,22 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.constants.Constants;
 import com.poc.saveenergy.myapplication.receiver.BluetoothDeviceReceiver;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private EditText editText_WiFiName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         editText_WiFiName = (EditText) findViewById(R.id.edtWifiName);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main;
     }
 
     @Override
