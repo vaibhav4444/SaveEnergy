@@ -1,5 +1,8 @@
 package com.poc.saveenergy.myapplication;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.constants.Constants;
+import com.poc.saveenergy.myapplication.receiver.BluetoothDeviceReceiver;
 
 public class MainActivity extends AppCompatActivity {
     private EditText editText_WiFiName;
@@ -43,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void onClick(View v){
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        IntentFilter intFilter = new IntentFilter();
+        intFilter.addAction(BluetoothDevice.ACTION_FOUND);
+        intFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        intFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(new BluetoothDeviceReceiver(), intFilter);
+        mBluetoothAdapter.startDiscovery();
         if(TextUtils.isEmpty(editText_WiFiName.getText().toString())){
             editText_WiFiName.setError("Enter wifi name");
             return;

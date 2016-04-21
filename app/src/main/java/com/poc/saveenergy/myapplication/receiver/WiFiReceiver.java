@@ -1,5 +1,6 @@
 package com.poc.saveenergy.myapplication.receiver;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +28,8 @@ public class WiFiReceiver extends BroadcastReceiver {
 
             String ssid = UtilityFunctions.getWiFiName(context);
             if(ssid != null && ssid.contains(SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME).toLowerCase())){
-                Toast.makeText(SaveEnergy.getInstance(), "Connected", Toast.LENGTH_LONG).show();
-                UtilityFunctions.enableBT();
+               // Toast.makeText(SaveEnergy.getInstance(), "Connected", Toast.LENGTH_LONG).show();
+                UtilityFunctions.enableBT(context);
             }
 
         }
