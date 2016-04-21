@@ -26,6 +26,10 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d9636290707162d26bb8ff6913bed269e9f99cbe" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
