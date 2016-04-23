@@ -5,4 +5,7 @@ package com.poc.saveenergy.myapplication.constants;
  */
 public class Constants {
     public static final String PREF_KEY_WIFI_NAME = "wifiname";
+    public static final String FRAGMENT_CONFIG = "Config";
+    public static final String FRAGMENT_ONLINE = "Status";
+
 }
