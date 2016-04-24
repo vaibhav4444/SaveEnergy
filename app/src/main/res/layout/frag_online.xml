@@ -7,10 +7,12 @@
         android:layout_height="match_parent"
         android:id="@+id/main_swipe">
 
-        <ListView
-            android:id="@+id/main_list"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/onlineList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+
+            />
 
     </jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout>
 
