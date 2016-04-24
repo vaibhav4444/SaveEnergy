@@ -19,6 +19,7 @@ import com.poc.saveenergy.myapplication.adapter.ViewPagerAdapter;
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.constants.Constants;
 import com.poc.saveenergy.myapplication.fragments.ConfigFragments;
+import com.poc.saveenergy.myapplication.fragments.FunctionsFragment;
 import com.poc.saveenergy.myapplication.fragments.OnlineFragment;
 import com.poc.saveenergy.myapplication.receiver.BluetoothDeviceReceiver;
 
@@ -92,6 +93,7 @@ public class MainActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ConfigFragments(), Constants.FRAGMENT_CONFIG);
+        adapter.addFragment(new FunctionsFragment(), Constants.FRAGMENT_FUNCTION);
         adapter.addFragment(new OnlineFragment(), Constants.FRAGMENT_ONLINE);
         viewPager.setAdapter(adapter);
     }
