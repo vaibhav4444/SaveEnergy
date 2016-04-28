@@ -1,8 +1,8 @@
 package com.poc.saveenergy.myapplication.application;
 
 import android.app.Application;
-//import com.crashlytics.android.Crashlytics;
-//import io.fabric.sdk.android.Fabric;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Vaib on 13-04-2016.
@@ -13,7 +13,7 @@ public class SaveEnergy extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
         saveEnergy = this;
     }
     public static SaveEnergy getInstance(){
