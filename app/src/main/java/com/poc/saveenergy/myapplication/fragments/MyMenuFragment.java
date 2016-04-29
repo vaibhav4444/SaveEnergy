@@ -12,7 +12,9 @@ import com.mxn.soul.flowingdrawer_core.MenuFragment;
 import com.poc.saveenergy.myapplication.R;
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * This fragment will show side menu
+ */
 public class MyMenuFragment extends MenuFragment {
 
     private ImageView ivMenuUserProfilePhoto;
