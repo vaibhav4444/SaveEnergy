@@ -2,6 +2,7 @@ package com.poc.saveenergy.myapplication.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,17 +26,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private RecyclerView mRecyclerView;
     private View mInflatedView;
+    private CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_frame);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_container_coordinatorLayout);
         setupToobar();
         setupRecyclerView();
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.drawerlayout);
         FlowingView mFlowingView = (FlowingView) findViewById(R.id.sv);
-
-
         FragmentManager fm = getSupportFragmentManager();
         MyMenuFragment mMenuFragment = (MyMenuFragment) fm.findFragmentById(R.id.id_container_menu);
         if (mMenuFragment == null) {
@@ -76,4 +77,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract int getLayoutId();
+
+    public CoordinatorLayout getmCoordinatorLayout(){
+        return mCoordinatorLayout;
+    }
 }

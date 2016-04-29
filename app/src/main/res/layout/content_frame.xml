@@ -8,7 +8,7 @@
     android:clipChildren="false">
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_fragment_container"
+        android:id="@+id/main_container_coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout

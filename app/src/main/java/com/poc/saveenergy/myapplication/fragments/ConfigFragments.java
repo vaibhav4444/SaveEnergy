@@ -1,6 +1,8 @@
 package com.poc.saveenergy.myapplication.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.R;
+import com.poc.saveenergy.myapplication.activity.MainActivity;
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.constants.Constants;
 import com.poc.saveenergy.myapplication.utils.UtilityFunctions;
@@ -22,6 +25,7 @@ public class ConfigFragments extends BaseFragment {
     public static final String LOG_TAG = ConfigFragments.class.getName();
     private EditText editText_WiFiName;
     private Button btn_save;
+    private MainActivity mMainActivity;
     public ConfigFragments() {
         // Required empty public constructor
     }
@@ -38,6 +42,14 @@ public class ConfigFragments extends BaseFragment {
     @Override
     protected int intializaLayoutId() {
         return R.layout.config_frag_layout;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof MainActivity){
+            mMainActivity = (MainActivity) activity;
+        }
     }
 
     @Override
@@ -58,7 +70,9 @@ public class ConfigFragments extends BaseFragment {
         }
         UtilityFunctions.hideKeyboard(getActivity(), btn_save);
         SaveEnergy.getInstance().getPrefs().put(Constants.PREF_KEY_WIFI_NAME, editText_WiFiName.getText().toString());
-        Toast.makeText(getActivity(), "Saved:"+SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME), Toast.LENGTH_LONG).show();
+        Snackbar snackbar = Snackbar
+                .make(mMainActivity.getmCoordinatorLayout(), mMainActivity.getResources().getString(R.string.wifiSaved)+SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME), Snackbar.LENGTH_LONG);
+        snackbar.show();
 
     }
 }

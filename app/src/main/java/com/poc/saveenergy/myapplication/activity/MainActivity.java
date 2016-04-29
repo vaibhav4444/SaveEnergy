@@ -62,11 +62,6 @@ public class MainActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void onClick(View v){
-      int id = v.getId();
-
-    }
-
     /**
      * Defines the number of tabs by setting appropriate fragment and tab name.
      * @param viewPager
