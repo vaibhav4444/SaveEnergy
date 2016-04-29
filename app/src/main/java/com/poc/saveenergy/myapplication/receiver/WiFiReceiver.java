@@ -27,7 +27,7 @@ public class WiFiReceiver extends BroadcastReceiver {
             // e.g. To check the Network Name or other info:
 
             String ssid = UtilityFunctions.getWiFiName(context);
-            if(ssid != null && ssid.contains(SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME).toLowerCase())){
+            if(ssid != null && SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME) != null && ssid.contains(SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME).toLowerCase())){
                // Toast.makeText(SaveEnergy.getInstance(), "Connected", Toast.LENGTH_LONG).show();
                 UtilityFunctions.enableBT(context);
             }

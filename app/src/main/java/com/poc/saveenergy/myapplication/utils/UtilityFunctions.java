@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by vaibhav.singhal on 4/14/2016.
  */
 public class UtilityFunctions {
     private static BluetoothAdapter mBluetoothAdapter;
+    /*********************************Bluetooth functions ****************************************************/
     public static void enableBT(Context context){
         initialiseBluetoothAdapterInstance();
         if (!mBluetoothAdapter.isEnabled()){
@@ -44,5 +47,19 @@ public class UtilityFunctions {
             mBluetoothAdapter =  BluetoothAdapter.getDefaultAdapter();
         }
         return mBluetoothAdapter;
+    }
+    /********************************************************************************************************/
+    /**
+     * Hide Keyboard on View Called From
+     *
+     * @param mContext
+     * @param view     View on which to hide Soft Keyboard
+     */
+    public static void hideKeyboard(Context mContext, View view) {
+        if (mContext != null && view != null) {
+            final InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
     }
 }

@@ -24,6 +24,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private LeftDrawerLayout mLeftDrawerLayout;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private RecyclerView mRecyclerView;
+    private View mInflatedView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,19 +45,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         mLeftDrawerLayout.setMenuFragment(mMenuFragment);
         //getWindow().setBackgroundDrawableResource(R.color.white);
         FrameLayout contentLayout = (FrameLayout) findViewById(R.id.content_detail);
-        View contentView = getLayoutInflater().inflate(getLayoutId(), null);
-        contentLayout.addView(contentView);
-
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
+        mInflatedView = getLayoutInflater().inflate(getLayoutId(), null);
+        contentLayout.addView(mInflatedView);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
     }
-    protected void setupRecyclerView(){
-        mRecyclerView = (RecyclerView)findViewById(R.id.drawerList);
+
+    protected void setupRecyclerView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.drawerList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
-    protected void setupToobar(){
+
+    protected void setupToobar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -67,5 +70,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
     }
+
+    protected View getInflatedView() {
+        return mInflatedView;
+    }
+
     protected abstract int getLayoutId();
 }
