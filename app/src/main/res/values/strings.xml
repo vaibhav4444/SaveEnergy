@@ -25,5 +25,12 @@
     <string name="title_friends">Friends</string>
     <string name="title_home">Home</string>
     <string name="wifiSaved">Saved Wifi : </string>
+    <string name="wifiname">WiFi Name</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+
+    <string name="error_wifiname">Please enter WiFi name</string>
+    <string name="error_username">Please enter Username</string>
+    <string name="error_password">Please enter Password</string>
 
 </resources>
