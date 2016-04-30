@@ -24,7 +24,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.utils.Logger;
 import com.poc.saveenergy.myapplication.constants.Constants;
 
@@ -46,6 +49,7 @@ public class BluetoothChatService {
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";
+    private OutputStream outStream = null;
 
     // Unique UUID for this application
     //00001101-0000-1000-8000-00805F9B34FB
@@ -255,7 +259,8 @@ public class BluetoothChatService {
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
-        r.write(out);
+       // r.write(out);
+        sendData(out);
     }
 
     /**
@@ -428,6 +433,18 @@ public class BluetoothChatService {
                 connectionFailed();
                 return;
             }
+            if(outStream != null){
+                try {
+                    outStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                outStream = mmSocket.getOutputStream();
+            } catch (IOException e) {
+                //errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
+            }
 
             // Reset the ConnectThread because we're done
             synchronized (BluetoothChatService.this) {
@@ -534,6 +551,22 @@ public class BluetoothChatService {
             msg = msg +  ".\n\nCheck that the SPP UUID: " + MY_UUID.toString() + " exists on server.\n\n";
 
             errorExit("Fatal Error", msg); */
+        }
+    }
+    public void sendData(byte[] buffer) {
+        if(outStream == null){
+            Toast.makeText(SaveEnergy.getInstance(),"outstream null", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Log.d("tag","b:"+buffer.toString());
+        try {
+            outStream.write(buffer);
+
+            // Share the sent message back to the UI Activity
+            //mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
+            //  .sendToTarget();
+        } catch (IOException e) {
+            Log.e(TAG, "Exception during write", e);
         }
     }
 }
