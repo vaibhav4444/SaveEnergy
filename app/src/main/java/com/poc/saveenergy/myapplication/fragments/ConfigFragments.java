@@ -61,9 +61,9 @@ public class ConfigFragments extends BaseFragment {
         editText_WiFiName = (EditText) mFragmentView.findViewById(R.id.edtWifiName);
         editText_username = (EditText) mFragmentView.findViewById(R.id.edt_username);
         editText_password = (EditText) mFragmentView.findViewById(R.id.edt_password);
-        txt_wifi = (TextInputLayout)mFragmentView.findViewById(R.id.txt_wifi);
-        txt_username = (TextInputLayout)mFragmentView.findViewById(R.id.txt_username);
-        txt_password = (TextInputLayout)mFragmentView.findViewById(R.id.txt_password);
+       // txt_wifi = (TextInputLayout)mFragmentView.findViewById(R.id.txt_wifi);
+        //txt_username = (TextInputLayout)mFragmentView.findViewById(R.id.txt_username);
+        //txt_password = (TextInputLayout)mFragmentView.findViewById(R.id.txt_password);
         btn_save = (Button) mFragmentView.findViewById(R.id.btn_save);
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,11 +113,11 @@ public class ConfigFragments extends BaseFragment {
             isError = true;
         }
         if(TextUtils.isEmpty(editText_username.getText().toString())){
-            editText_WiFiName.setError(getResources().getString(R.string.error_username));
+            editText_username.setError(getResources().getString(R.string.error_username));
             isError = true;
         }
         if(TextUtils.isEmpty(editText_password.getText().toString())){
-            editText_WiFiName.setError(getResources().getString(R.string.error_password));
+            editText_password.setError(getResources().getString(R.string.error_password));
             isError = true;
         }
         return isError;

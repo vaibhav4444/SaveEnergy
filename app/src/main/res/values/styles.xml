@@ -26,5 +26,12 @@
         <item name="android:textSize">20sp</item>
 
     </style>
+    <style name="TextViewStyle" parent="@android:style/Widget.TextView">
+        <item name="android:singleLine">true</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">@color/darkOrange</item>
+    </style>
 
 </resources>
