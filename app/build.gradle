@@ -53,4 +53,5 @@ dependencies {
     compile 'com.mxn.soul:flowingdrawer-core:1.2.2'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.squareup.picasso:picasso:2.5.0'
+    compile 'com.android.support:cardview-v7:22.0.+'
 }

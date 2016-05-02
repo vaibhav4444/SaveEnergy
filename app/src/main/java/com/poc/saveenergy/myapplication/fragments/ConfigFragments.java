@@ -92,9 +92,9 @@ public class ConfigFragments extends BaseFragment {
      * save details in preference
      */
     private void saveDetails(){
-       // if(isError()){
-           // return;
-        //} up14y7434
+       if(isError()){
+           return;
+       }
 
 
         UtilityFunctions.hideKeyboard(getActivity(), btn_save);
