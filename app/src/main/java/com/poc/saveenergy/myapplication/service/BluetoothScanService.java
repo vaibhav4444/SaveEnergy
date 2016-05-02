@@ -40,7 +40,7 @@ public class BluetoothScanService extends Service {
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothChatService mBluetoothChatService;
     private String mote_mac = "80:6C";
-    private String arduino_mac = "00:06:66:76:A0:AD";
+    private String arduino_mac= "00:06:66:76:A0:AD";
     /**
      * Newly discovered devices
      */
@@ -94,7 +94,7 @@ public class BluetoothScanService extends Service {
                 //ParcelUuid [] uudi =device.getUuids();
                 //device.fetchUuidsWithSdp();
                 // If it's already paired, skip it, because it's been listed already
-                if(device.getAddress().contains(mote_mac)){
+                if(device.getAddress().contains(arduino_mac)){
                     mBluetoothAdapter.cancelDiscovery();
                     mBluetoothChatService.connect(device,false);
 

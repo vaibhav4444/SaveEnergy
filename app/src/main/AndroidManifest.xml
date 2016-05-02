@@ -30,6 +30,15 @@
             android:name="io.fabric.ApiKey"
             android:value="d9636290707162d26bb8ff6913bed269e9f99cbe" />
         <service android:name=".service.BluetoothScanService"/>
+        <service android:name=".service.BTTestService"/>
+        <receiver
+            android:name=".receiver.BluetoothStateReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

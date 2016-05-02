@@ -255,7 +255,7 @@ public class BluetoothChatService {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+            if (mState != STATE_CONNECTED) //return;
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
@@ -434,11 +434,11 @@ public class BluetoothChatService {
                 return;
             }
             if(outStream != null){
-                try {
-                    outStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                //try {
+                    //outStream.close();
+               /// } catch (IOException e) {
+                  ////  e.printStackTrace();
+                //}
             }
             try {
                 outStream = mmSocket.getOutputStream();

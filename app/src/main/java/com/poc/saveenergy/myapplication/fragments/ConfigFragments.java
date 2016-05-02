@@ -92,9 +92,11 @@ public class ConfigFragments extends BaseFragment {
      * save details in preference
      */
     private void saveDetails(){
-        if(isError()){
-            return;
-        }
+       // if(isError()){
+           // return;
+        //} up14y7434
+
+
         UtilityFunctions.hideKeyboard(getActivity(), btn_save);
         prefs.put(Constants.PREF_KEY_WIFI_NAME, editText_WiFiName.getText().toString());
         prefs.put(Constants.PREF_KEY_USERNAME, editText_username.getText().toString());
