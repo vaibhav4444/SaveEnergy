@@ -23,39 +23,16 @@ import java.util.ArrayList;
 
 public class MongoLabUtil {
     public final String LOG_TAG = MongoLabUtil.class.getName();
+    public MongoLabUtil(){
+
+    }
     public void sendHTTPData(JSONObject json, AsyncResponse asyncResponse) {
       new PostDataAsyncTask(asyncResponse, json).execute();
 
     }
-    public static void getData() throws Exception {
+    public  void getData(AsyncResponse asyncResponse) {
 
-        URL obj = new URL(Constants.MOGO_URL);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-        // optional default is GET
-        con.setRequestMethod("GET");
-
-        //add request header
-        //con.setRequestProperty("User-Agent", USER_AGENT);
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Accept", "application/json");
-
-        int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'GET' request to URL : " + Constants.MOGO_URL);
-        System.out.println("Response Code : " + responseCode);
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        //print result
-        System.out.println(response.toString());
+        new GetDataAsyncTask(asyncResponse).execute();
 
     }
     private class PostDataAsyncTask extends AsyncTask<JSONObject, Void,String>
@@ -106,6 +83,57 @@ public class MongoLabUtil {
         }
 
     }
+
+        @Override
+        protected void onPostExecute (String s){
+            super.onPostExecute(s);
+            asyncResponse.processFinish(s);
+
+        }
+    };
+    private class GetDataAsyncTask extends AsyncTask<JSONObject, Void,String>
+    {
+        private AsyncResponse asyncResponse;
+        private StringBuffer response = new StringBuffer();
+        public GetDataAsyncTask(AsyncResponse asyncResponse){
+            this.asyncResponse = asyncResponse;
+        }
+        @Override
+        protected String doInBackground (JSONObject...jsonObjects){
+            HttpURLConnection connection = null;
+            try {
+                URL obj = new URL(Constants.MOGO_URL);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                // optional default is GET
+                con.setRequestMethod("GET");
+
+                //add request header
+                //con.setRequestProperty("User-Agent", USER_AGENT);
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setRequestProperty("Accept", "application/json");
+
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'GET' request to URL : " + Constants.MOGO_URL);
+                System.out.println("Response Code : " + responseCode);
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                //print result
+                System.out.println(response.toString());
+            } catch (Exception exception) {
+                Log.e(LOG_TAG, exception.toString());
+                return null;
+            }
+            return response.toString();
+        }
 
         @Override
         protected void onPostExecute (String s){

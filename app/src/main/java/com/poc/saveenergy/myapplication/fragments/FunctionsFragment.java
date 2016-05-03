@@ -15,10 +15,12 @@ import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
+import com.poc.saveenergy.myapplication.interfaces.AsyncResponse;
 import com.poc.saveenergy.myapplication.service.BTTestService;
 import com.poc.saveenergy.myapplication.service.BluetoothChatService;
 import com.poc.saveenergy.myapplication.service.BluetoothScanService;
 import com.poc.saveenergy.myapplication.utils.Logger;
+import com.poc.saveenergy.myapplication.utils.MongoLabUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +83,12 @@ public class FunctionsFragment extends BaseFragment {
             btnSendOne.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    new MongoLabUtil().getData(new AsyncResponse() {
+                        @Override
+                        public void processFinish(String output) {
+                            Log.i("", "output:"+output);
+                        }
+                    });
                     //btTestService.sendData("Y   ".getBytes());
                     //sendData("Y".getBytes());
                 }
