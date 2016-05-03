@@ -22,4 +22,9 @@ public class Constants {
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
 
+    //MongoLab Constants
+    private static final String MONGO_KEY = "veTqID_gkb74tG-yL4MGcS1p2RRBP1Pf";
+    public static final String MOGO_URL = "https://api.mongolab.com/api/1/databases/geolocation/collections/boom?apiKey=" + MONGO_KEY;
+
+
 }

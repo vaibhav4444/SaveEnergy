@@ -71,6 +71,12 @@ public class ConfigFragments extends BaseFragment {
                 saveDetails();
             }
         });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         fillEditText();
     }
 
@@ -121,5 +127,16 @@ public class ConfigFragments extends BaseFragment {
             isError = true;
         }
         return isError;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        editText_WiFiName.setError(null);
+        editText_username.setError(null);
+        editText_password.setError(null);
+        editText_WiFiName.setText("");
+        editText_username.setText("");
+        editText_password.setText("");
     }
 }
