@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"><font fgcolor="blue">Smart</font>
+    <string name="app_name"><font fgcolor="yellow">Smart</font>
         <font fgcolor="green">Office</font></string>
 
     <string name="hello_world">Hello world!</string>

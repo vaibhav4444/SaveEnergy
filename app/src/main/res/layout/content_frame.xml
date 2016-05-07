@@ -29,7 +29,10 @@
                     android:layout_height="wrap_content"
                     app:tabMode="fixed"
                     app:tabGravity="fill"
-                    app:tabTextColor="@color/white"/>
+                    app:tabTextColor="@color/green"
+                    app:tabSelectedTextColor="@color/yellow"
+                    app:tabIndicatorColor="@color/yellow"
+                    android:tabStripEnabled = "true"/>
 
 
             </android.support.design.widget.AppBarLayout>

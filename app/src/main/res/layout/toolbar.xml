@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CollapsingToolbarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/collapsing_toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:contentScrim="?attr/colorPrimary"
-    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
     <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:local="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -16,4 +11,3 @@
         android:title="@string/app_name"
         local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         local:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-</android.support.design.widget.CollapsingToolbarLayout>

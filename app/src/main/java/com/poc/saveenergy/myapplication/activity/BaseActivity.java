@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_frame);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_container_coordinatorLayout);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
         setupToobar();
         setupRecyclerView();
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.drawerlayout);
@@ -70,7 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
-        mCollapsingToolbarLayout.setTitle(getResources().getString(R.string.app_name));
+        toolbar.setTitle(getResources().getString(R.string.app_name));
 
     }
 
