@@ -33,6 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_frame);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_container_coordinatorLayout);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         setupToobar();
         setupRecyclerView();
         mLeftDrawerLayout = (LeftDrawerLayout) findViewById(R.id.drawerlayout);
@@ -48,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         FrameLayout contentLayout = (FrameLayout) findViewById(R.id.content_detail);
         mInflatedView = getLayoutInflater().inflate(getLayoutId(), null);
         contentLayout.addView(mInflatedView);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
     }
 
     protected void setupRecyclerView() {
@@ -69,6 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
+        mCollapsingToolbarLayout.setTitle(getResources().getString(R.string.app_name));
 
     }
 
