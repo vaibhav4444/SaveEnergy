@@ -191,7 +191,6 @@ public class FunctionsFragment extends BaseFragment {
     public void connectBT(){
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
-
         // Two things are needed to make a connection:
         //   A MAC address, which we got above.
         //   A Service ID or UUID.  In this case we are using the

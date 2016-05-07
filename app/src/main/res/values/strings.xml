@@ -33,5 +33,6 @@
     <string name="error_wifiname">Please enter WiFi name</string>
     <string name="error_username">Please enter Username</string>
     <string name="error_password">Please enter Password</string>
+    <string name="show">Show</string>
 
 </resources>

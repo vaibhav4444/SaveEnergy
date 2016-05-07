@@ -23,7 +23,7 @@
 
                 <include layout="@layout/toolbar"/>
                 <android.support.design.widget.TabLayout
-                    app:tabBackground="@color/darkOrange"
+                    app:tabBackground="@color/blue"
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -36,7 +36,8 @@
             <FrameLayout
                 android:id="@+id/content_detail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/lightGray"/>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 

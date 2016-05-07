@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.activity.MainActivity;
@@ -29,6 +34,7 @@ public class ConfigFragments extends BaseFragment {
 
     private Button btn_save;
     private MainActivity mMainActivity;
+    private CheckBox chkShowHidePassword;
     public ConfigFragments() {
         // Required empty public constructor
     }
@@ -69,6 +75,18 @@ public class ConfigFragments extends BaseFragment {
             @Override
             public void onClick(View view) {
                 saveDetails();
+            }
+        });
+        chkShowHidePassword = (CheckBox) mFragmentView.findViewById(R.id.checkBoxShow);
+        chkShowHidePassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked) {
+                    editText_password.setTransformationMethod(new PasswordTransformationMethod());;
+                } else {
+                    //show password as plain text
+                    editText_password.setTransformationMethod(null);
+                }
             }
         });
 
