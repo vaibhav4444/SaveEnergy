@@ -31,6 +31,7 @@ public class MainActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.green));
         //Assigns the ViewPager to TabLayout.
         tabLayout.setupWithViewPager(viewPager);
 
