@@ -47,9 +47,9 @@ public class MyMenuFragment extends MenuFragment {
     }
 
     public void onOpenMenu(){
-        Toast.makeText(getActivity(),"onOpenMenu",Toast.LENGTH_SHORT).show();
+
     }
     public void onCloseMenu(){
-        Toast.makeText(getActivity(),"onCloseMenu",Toast.LENGTH_SHORT).show();
+
     }
 }

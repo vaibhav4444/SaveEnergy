@@ -8,6 +8,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -84,7 +86,7 @@ public class OnlineFragment extends Fragment {
             }
         });
         prepareRecyclerView(view);
-
+        setHasOptionsMenu(true);
         return view;
     }
     private void prepareRecyclerView(View view){
@@ -94,5 +96,10 @@ public class OnlineFragment extends Fragment {
         mUserStatusRecyclerView.setLayoutManager(mLayoutManager);
         mUserStatusRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mUserStatusRecyclerView.setAdapter(onlineListAdapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_with_search, menu);
     }
 }

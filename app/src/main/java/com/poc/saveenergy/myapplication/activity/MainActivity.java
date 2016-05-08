@@ -31,7 +31,6 @@ public class MainActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setTabTextColors(getResources().getColorStateList(R.color.green));
         //Assigns the ViewPager to TabLayout.
         tabLayout.setupWithViewPager(viewPager);
 
@@ -70,7 +69,7 @@ public class MainActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ConfigFragments(), Constants.FRAGMENT_CONFIG);
-        adapter.addFragment(new FunctionsFragment(), Constants.FRAGMENT_FUNCTION);
+       // adapter.addFragment(new FunctionsFragment(), Constants.FRAGMENT_FUNCTION);
         adapter.addFragment(new OnlineFragment(), Constants.FRAGMENT_ONLINE);
         viewPager.setAdapter(adapter);
     }

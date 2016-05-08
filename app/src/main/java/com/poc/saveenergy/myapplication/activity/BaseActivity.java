@@ -62,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void setupToobar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 mLeftDrawerLayout.toggle();
             }
         });
-        setSupportActionBar(toolbar);
+
         toolbar.setTitle(getResources().getString(R.string.app_name));
 
     }
