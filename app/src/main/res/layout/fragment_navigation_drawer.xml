@@ -15,20 +15,31 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:paddingRight="10dp">
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/nav_header_container"
             android:layout_width="match_parent"
             android:layout_height="140dp"
             android:layout_alignParentTop="true"
-            >
+            android:orientation="vertical"
+            android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@drawable/user"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/vaib"
+                />
+            <TextView
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textSize="20sp"
+                android:id="@+id/txtUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                />
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
         <android.support.v7.widget.RecyclerView

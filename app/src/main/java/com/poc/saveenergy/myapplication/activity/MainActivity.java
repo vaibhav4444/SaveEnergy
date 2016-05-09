@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.adapter.ViewPagerAdapter;
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
@@ -25,9 +26,11 @@ links:http://www.androidhive.info/2015/09/android-material-design-working-with-t
 public class MainActivity extends BaseActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);

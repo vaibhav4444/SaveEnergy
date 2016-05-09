@@ -1,19 +1,25 @@
 package com.poc.saveenergy.myapplication.fragments;
 
+import android.app.SearchManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.poc.saveenergy.myapplication.R;
+import com.poc.saveenergy.myapplication.activity.MainActivity;
 import com.poc.saveenergy.myapplication.adapter.OnlineListAdapter;
 import com.poc.saveenergy.myapplication.model.OnlineListModel;
 
@@ -28,8 +34,10 @@ import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 public class OnlineFragment extends Fragment {
     public static final String LOG_TAG = OnlineFragment.class.getName();
     private WaveSwipeRefreshLayout mWaveSwipeRefreshLayout;
-    private List<OnlineListModel> list_userStatus;
+    private List<OnlineListModel> list_userStatus, list_userCopy;
     private RecyclerView mUserStatusRecyclerView;
+    private OnlineListAdapter  onlineListAdapter ;
+
     public OnlineFragment() {
         // Required empty public constructor
     }
@@ -38,15 +46,38 @@ public class OnlineFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         list_userStatus = new ArrayList<OnlineListModel>();
+        list_userCopy = new ArrayList<OnlineListModel>();
         OnlineListModel model1 = new OnlineListModel();
         model1.setName("Tej");
+        model1.setIsOnline(true);
+        model1.setImageResource(R.drawable.tej);
         OnlineListModel model2 = new OnlineListModel();
         model2.setName("Vaibhav");
+        model2.setIsOnline(false);
+        model2.setImageResource(R.drawable.vaib);
         OnlineListModel model3 = new OnlineListModel();
         model3.setName("Naval");
+        model3.setIsOnline(true);
+        model3.setImageResource(R.drawable.naval);
+        OnlineListModel model4 = new OnlineListModel();
+        model4.setName("Ajit");
+        model4.setIsOnline(true);
+        OnlineListModel model5 = new OnlineListModel();
+        model5.setName("Mangal");
+        model5.setIsOnline(false);
+        OnlineListModel model6 = new OnlineListModel();
+        model6.setName("Alok");
+        model6.setIsOnline(false);
+        OnlineListModel model7= new OnlineListModel();
+        model7.setName("Tarun");
         list_userStatus.add(model1);
         list_userStatus.add(model2);
         list_userStatus.add(model3);
+        list_userStatus.add(model4);
+        list_userStatus.add(model5);
+        list_userStatus.add(model6);
+        list_userStatus.add(model7);
+        list_userCopy.addAll(list_userStatus);
 
 
 
@@ -90,7 +121,7 @@ public class OnlineFragment extends Fragment {
         return view;
     }
     private void prepareRecyclerView(View view){
-        OnlineListAdapter  onlineListAdapter = new OnlineListAdapter(list_userStatus);
+        onlineListAdapter = new OnlineListAdapter(list_userStatus);
         mUserStatusRecyclerView = (RecyclerView) view.findViewById(R.id.onlineList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mUserStatusRecyclerView.setLayoutManager(mLayoutManager);
@@ -101,5 +132,40 @@ public class OnlineFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_with_search, menu);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getActivity().getApplicationContext().getSystemService(getActivity().SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                // this is your adapter that will be filtered
+                if(TextUtils.isEmpty(newText)){
+                    onlineListAdapter.animateTo(list_userCopy);
+                    mUserStatusRecyclerView.scrollToPosition(0);
+                    return true;
+                }
+                final List<OnlineListModel> filteredModelList = filter(list_userStatus, newText);
+                onlineListAdapter.animateTo(filteredModelList);
+                mUserStatusRecyclerView.scrollToPosition(0);
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                //Here u can get the value "query" which is entered in the search box.
+                return false;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+    }
+    private List<OnlineListModel> filter(List<OnlineListModel> models, String query) {
+        query = query.toLowerCase();
+
+        final List<OnlineListModel> filteredModelList = new ArrayList<>();
+        for (OnlineListModel model : models) {
+            final String text = model.getName().toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
     }
 }

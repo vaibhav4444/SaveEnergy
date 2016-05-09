@@ -67,6 +67,7 @@ public class ConfigFragments extends BaseFragment {
         editText_WiFiName = (EditText) mFragmentView.findViewById(R.id.edtWifiName);
         editText_username = (EditText) mFragmentView.findViewById(R.id.edt_username);
         editText_password = (EditText) mFragmentView.findViewById(R.id.edt_password);
+
        // txt_wifi = (TextInputLayout)mFragmentView.findViewById(R.id.txt_wifi);
         //txt_username = (TextInputLayout)mFragmentView.findViewById(R.id.txt_username);
         //txt_password = (TextInputLayout)mFragmentView.findViewById(R.id.txt_password);
@@ -96,6 +97,7 @@ public class ConfigFragments extends BaseFragment {
     public void onResume() {
         super.onResume();
         fillEditText();
+        UtilityFunctions.hideKeyboard(getActivity(), editText_WiFiName);
     }
 
     /**
