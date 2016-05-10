@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.activity.MainActivity;
@@ -127,9 +128,10 @@ public class ConfigFragments extends BaseFragment {
         prefs.put(Constants.PREF_KEY_WIFI_NAME, editText_WiFiName.getText().toString());
         prefs.put(Constants.PREF_KEY_USERNAME, editText_username.getText().toString());
         prefs.put(Constants.PREF_KEY_PASSWORD, editText_password.getText().toString());
-        Snackbar snackbar = Snackbar
-                .make(mMainActivity.getmCoordinatorLayout(), mMainActivity.getResources().getString(R.string.wifiSaved)+SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME), Snackbar.LENGTH_LONG);
-        snackbar.show();
+       /* Snackbar snackbar = Snackbar
+                .make(mMainActivity.getmCoordinatorLayout(), R.string.de, Snackbar.LENGTH_LONG);
+        snackbar.show(); */
+        Toast.makeText(getActivity(), R.string.detailSaved, Toast.LENGTH_LONG).show();
 
     }
     private boolean isError(){

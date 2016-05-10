@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.poc.saveenergy.myapplication.R;
-import com.poc.saveenergy.myapplication.activity.MainActivity;
 import com.poc.saveenergy.myapplication.adapter.OnlineListAdapter;
 import com.poc.saveenergy.myapplication.model.OnlineListModel;
 
@@ -30,6 +29,7 @@ import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 
 /**
  * Created by Vaib on 23-04-2016.
+ * links:http://stackoverflow.com/questions/30398247/how-to-filter-a-recyclerview-with-a-searchview
  */
 public class OnlineFragment extends Fragment {
     public static final String LOG_TAG = OnlineFragment.class.getName();
@@ -128,7 +128,7 @@ public class OnlineFragment extends Fragment {
         mUserStatusRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mUserStatusRecyclerView.setAdapter(onlineListAdapter);
     }
-
+    //http://stackoverflow.com/questions/30398247/how-to-filter-a-recyclerview-with-a-searchview
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_with_search, menu);
