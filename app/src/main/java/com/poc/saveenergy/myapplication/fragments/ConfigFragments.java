@@ -1,6 +1,8 @@
 package com.poc.saveenergy.myapplication.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -65,6 +67,21 @@ public class ConfigFragments extends BaseFragment {
 
     @Override
     protected void initViews(View mFragmentView) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+       builder1.setIcon(R.mipmap.app_icon);
+        builder1.setTitle("Health Alert");
+        builder1.setMessage("It's been longer than 30 minutes, you should probably take short walk.");
+
+        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert11 = builder1.create();
+        //alert11.show();
+
         editText_WiFiName = (EditText) mFragmentView.findViewById(R.id.edtWifiName);
         editText_username = (EditText) mFragmentView.findViewById(R.id.edt_username);
         editText_password = (EditText) mFragmentView.findViewById(R.id.edt_password);
@@ -119,6 +136,7 @@ public class ConfigFragments extends BaseFragment {
      * save details in preference
      */
     private void saveDetails(){
+        UtilityFunctions.createNotification(getActivity());
        if(isError()){
            return;
        }
