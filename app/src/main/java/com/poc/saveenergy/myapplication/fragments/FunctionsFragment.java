@@ -41,6 +41,8 @@ public class FunctionsFragment extends BaseFragment {
     private OutputStream outStream = null;
     private BTTestService btTestService;
     private Timer t = new Timer();
+    private static BluetoothDevice device;
+    public static boolean isConnected = false;
 
     // Well known SPP UUID
     private static final UUID MY_UUID =
@@ -56,7 +58,6 @@ public class FunctionsFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
 
-        //connectBT();
     }
 
     @Override
@@ -80,19 +81,17 @@ public class FunctionsFragment extends BaseFragment {
     @Override
     protected void initViews(final View mFragmentView) {
         btnSendOne = (Button) mFragmentView.findViewById(R.id.btn_one);
-            btnSendOne.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new MongoLabUtil().getData(new AsyncResponse() {
-                        @Override
-                        public void processFinish(String output) {
-                            Log.i("", "output:"+output);
-                        }
-                    });
-                    //btTestService.sendData("Y   ".getBytes());
-                    //sendData("Y".getBytes());
-                }
-            });
+        btnSendOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MongoLabUtil().getData(new AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) {
+                        Log.i("", "output:"+output);
+                    }
+                });
+            }
+        });
         btnSendZero = (Button) mFragmentView.findViewById(R.id.btn_zero);
         btnSendZero.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +131,7 @@ public class FunctionsFragment extends BaseFragment {
 
         try     {
             if(btSocket != null)
-            btSocket.close();
+                btSocket.close();
         } catch (IOException e2) {
             errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
         }
@@ -142,63 +141,31 @@ public class FunctionsFragment extends BaseFragment {
         @Override
         public void handleMessage(Message msg) {
             FragmentActivity activity = getActivity();
-            /*switch (msg.what) {
-                case Constants.MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) {
-                        case BluetoothChatService.STATE_CONNECTED:
-                            setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            mConversationArrayAdapter.clear();
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
-                            break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
-                            break;
-                    }
-                    break;
-                case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
-                case Constants.MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
-                    break;
-                case Constants.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
-                    if (null != activity) {
-                        Toast.makeText(activity, "Connected to "
-                                + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case Constants.MESSAGE_TOAST:
-                    if (null != activity) {
-                        Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
-                                Toast.LENGTH_SHORT).show();
-                        startScanService();
-                    }
-                    break;
-            } */
+
         }
     };
     public void connectBT(){
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
+
         // Two things are needed to make a connection:
         //   A MAC address, which we got above.
         //   A Service ID or UUID.  In this case we are using the
         //     UUID for SPP.
         try {
-            btSocket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+            if(device != null)
+                btSocket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+            else{
+                isConnected = false;
+                connectBT();
+                return;
+            }
+
         } catch (IOException e) {
+            isConnected = false;
             errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
+            connectBT();
+            return;
         }
 
         // Discovery is resource intensive.  Make sure it isn't going on
@@ -209,8 +176,10 @@ public class FunctionsFragment extends BaseFragment {
         Log.d("TAG", "...Connecting to Remote...");
         try {
             btSocket.connect();
+            isConnected = true;
             Log.d("TAG", "...Connection established and data link opened...");
         } catch (IOException e) {
+            isConnected = false;
             try {
                 btSocket.close();
             } catch (IOException e2) {
@@ -233,26 +202,7 @@ public class FunctionsFragment extends BaseFragment {
         Toast msg = Toast.makeText(getActivity(),
                 title + " - " + message, Toast.LENGTH_SHORT);
         msg.show();
-        //finish();
-    }
-    public void sendData(byte[] buffer) {
-        if(btSocket == null){
-            Toast.makeText(SaveEnergy.getInstance(),"bt socket null", Toast.LENGTH_LONG).show();
-        }
-        if(outStream == null){
-            Toast.makeText(SaveEnergy.getInstance(),"outstream null", Toast.LENGTH_LONG).show();
-            return;
-        }
-        Log.d("tag", "b:" + buffer.toString());
-        /*try {
-            outStream.write(buffer);
 
-            // Share the sent message back to the UI Activity
-            //mHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
-            //  .sendToTarget();
-        } catch (IOException e) {
-            Log.e("TAG", "Exception during write", e);
-        } */
     }
     private class ReadInputThread extends Thread {
         private final InputStream mmInStream;
@@ -277,7 +227,7 @@ public class FunctionsFragment extends BaseFragment {
             Logger.debug("TAG", "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024];
             int bytes;
-            sendDataToBT(mmOutStream);
+
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
@@ -301,31 +251,13 @@ public class FunctionsFragment extends BaseFragment {
      * Indicate that the connection was lost and notify the UI Activity.
      */
     private void connectionLost() {
-       // if(btAdapter.isEnabled()) {
-        t.cancel();
-        BTTestService.listDevice.clear();
-            btAdapter.startDiscovery();
-        //}
-    }
-    private void sendDataToBT(final OutputStream outStream){
-        try {
-            outStream.write("5".getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (isConnected == false) {
+            connectBT();
         }
-        t.scheduleAtFixedRate(new TimerTask() {
+        BTTestService.listDevice.clear();
 
-                                  @Override
-                                  public void run() {
-
-                                      //Called each time when 1000 milliseconds (1 second) (the period parameter)
-                                  }
-
-                              },
-//Set how long before to start calling the TimerTask (in milliseconds)
-                0,
-//Set the amount of time between each execution (in milliseconds)
-                1000*0);
     }
+
+
 
 }
