@@ -3,20 +3,15 @@ package com.poc.saveenergy.myapplication.activity;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.adapter.ViewPagerAdapter;
-import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.constants.Constants;
 import com.poc.saveenergy.myapplication.fragments.ConfigFragments;
-import com.poc.saveenergy.myapplication.fragments.FunctionsFragment;
+import com.poc.saveenergy.myapplication.fragments.BluetoothOperationClass;
 import com.poc.saveenergy.myapplication.fragments.OnlineFragment;
 
 /*
@@ -33,6 +28,7 @@ public class MainActivity extends BaseActivity {
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
+        startBluetoothOperation();
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         //Assigns the ViewPager to TabLayout.
         tabLayout.setupWithViewPager(viewPager);
@@ -75,5 +71,10 @@ public class MainActivity extends BaseActivity {
        // adapter.addFragment(new FunctionsFragment(), Constants.FRAGMENT_FUNCTION);
         adapter.addFragment(new OnlineFragment(), Constants.FRAGMENT_ONLINE);
         viewPager.setAdapter(adapter);
+    }
+    private void startBluetoothOperation(){
+        BluetoothOperationClass bluetoothOperationClass = new BluetoothOperationClass(this);
+        //bluetoothOperationClass.connectBT();
+
     }
 }

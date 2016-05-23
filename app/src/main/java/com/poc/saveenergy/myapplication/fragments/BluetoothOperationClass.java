@@ -1,5 +1,6 @@
 package com.poc.saveenergy.myapplication.fragments;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -14,35 +15,33 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.R;
-import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.interfaces.AsyncResponse;
 import com.poc.saveenergy.myapplication.service.BTTestService;
 import com.poc.saveenergy.myapplication.service.BluetoothChatService;
-import com.poc.saveenergy.myapplication.service.BluetoothScanService;
+import com.poc.saveenergy.myapplication.utils.BeaconUtils;
 import com.poc.saveenergy.myapplication.utils.Logger;
 import com.poc.saveenergy.myapplication.utils.MongoLabUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 /**
  * Created by Vaib on 24-04-2016.
  */
-public class FunctionsFragment extends BaseFragment {
-    public static final String LOG_TAG = FunctionsFragment.class.getName();
-    private Button btnSendOne, btnSendZero, btn_startService, btn_stopService;
+public class BluetoothOperationClass{
+    public static final String LOG_TAG = BluetoothOperationClass.class.getName();
+    //private Button btnSendOne, btnSendZero, btn_startService, btn_stopService;
     private BluetoothChatService mChatService = null;
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
     private BTTestService btTestService;
-    private Timer t = new Timer();
     private static BluetoothDevice device;
-    public static boolean isConnected = false;
+    public static boolean isBluetoothConnected = false;
+    private Activity mActivity;
+    private BeaconUtils mBeaconUtils;
 
     // Well known SPP UUID
     private static final UUID MY_UUID =
@@ -50,11 +49,15 @@ public class FunctionsFragment extends BaseFragment {
 
     // Insert your bluetooth devices MAC address
     private static String address = "00:06:66:76:A0:AD";
-    public FunctionsFragment() {
-        // Required empty public constructor
+    public BluetoothOperationClass(Activity activity) {
+        mActivity = activity;
+        mBeaconUtils = new BeaconUtils(mActivity, this);
+    }
+    public BluetoothOperationClass() {
+
     }
 
-    @Override
+    /*@Override
     public void onStart() {
         super.onStart();
 
@@ -135,12 +138,12 @@ public class FunctionsFragment extends BaseFragment {
         } catch (IOException e2) {
             errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
         }
-    }
+    } */
 
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            FragmentActivity activity = getActivity();
+            //FragmentActivity activity = getActivity();
 
         }
     };
@@ -156,13 +159,13 @@ public class FunctionsFragment extends BaseFragment {
             if(device != null)
                 btSocket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
             else{
-                isConnected = false;
+                isBluetoothConnected = false;
                 connectBT();
                 return;
             }
 
         } catch (IOException e) {
-            isConnected = false;
+            isBluetoothConnected = false;
             errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
             connectBT();
             return;
@@ -176,10 +179,10 @@ public class FunctionsFragment extends BaseFragment {
         Log.d("TAG", "...Connecting to Remote...");
         try {
             btSocket.connect();
-            isConnected = true;
+            isBluetoothConnected = true;
             Log.d("TAG", "...Connection established and data link opened...");
         } catch (IOException e) {
-            isConnected = false;
+            isBluetoothConnected = false;
             try {
                 btSocket.close();
             } catch (IOException e2) {
@@ -199,7 +202,7 @@ public class FunctionsFragment extends BaseFragment {
         readInputThread.start();
     }
     private void errorExit(String title, String message){
-        Toast msg = Toast.makeText(getActivity(),
+        Toast msg = Toast.makeText(mActivity,
                 title + " - " + message, Toast.LENGTH_SHORT);
         msg.show();
 
@@ -251,11 +254,22 @@ public class FunctionsFragment extends BaseFragment {
      * Indicate that the connection was lost and notify the UI Activity.
      */
     private void connectionLost() {
-        while (isConnected == false) {
+        while (isBluetoothConnected == false) {
             connectBT();
         }
         BTTestService.listDevice.clear();
 
+    }
+    public void closeBtConnection(){
+        if(btSocket == null){
+            Log.e(LOG_TAG, "bt socket is null");
+            return;
+        }
+        try {
+            btSocket.close();
+        } catch (IOException e2) {
+            errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
+        }
     }
 
 
