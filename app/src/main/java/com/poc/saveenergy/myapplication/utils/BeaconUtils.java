@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class BeaconUtils {
     public static final String LOG_TAG = BeaconUtils.class.getName();
     private MainActivity mContext;
-    private BeaconManager beaconManager;
+    private static BeaconManager beaconManager;
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 59044, 21681);
     //list will contain major id of beacons found
     private List<Integer> majors = new ArrayList<Integer>();
@@ -79,8 +79,14 @@ public class BeaconUtils {
                         // distance between device and beacon.
                         //getActionBar().setSubtitle("Found beacons: " + beacons.size());
                         int count = beacons.size();
+
                         for(Beacon beacon:beacons){
                             int major = beacon.getMajor();
+                            if(major == 59044){
+                                if(BTFinalService.isBluetoothConnected == false){
+                                    mBTFinalService.connectBT();
+                                }
+                            }
                             boolean ifContain = majors.contains(major);
                             if(!majors.contains(major)){
                                 majors.add(major);
@@ -133,7 +139,10 @@ public class BeaconUtils {
     /**
      * Stop beacon search
      */
-    public void stopBeaconSearch(){
+    public  void stopBeaconSearch(){
+        if(beaconManager == null){
+            return;
+        }
         try {
             beaconManager.stopRanging(ALL_ESTIMOTE_BEACONS_REGION);
         } catch (RemoteException e) {

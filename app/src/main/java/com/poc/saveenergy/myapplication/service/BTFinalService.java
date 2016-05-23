@@ -28,7 +28,7 @@ public class BTFinalService extends Service {
 
     // Insert your bluetooth devices MAC address
     private static String address = "00:06:66:76:A0:AD";
-    public static boolean isBluetoothConnected = false;
+    public   static  boolean  isBluetoothConnected = false;
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
@@ -182,6 +182,14 @@ public class BTFinalService extends Service {
             isBluetoothConnected = false;
         } catch (IOException e2) {
             errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mBeaconUtils != null){
+            mBeaconUtils.stopBeaconSearch();
         }
     }
 }

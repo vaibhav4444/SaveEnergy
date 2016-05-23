@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.poc.saveenergy.myapplication.service.BTFinalService;
 import com.poc.saveenergy.myapplication.service.BTTestService;
 
 /**
@@ -19,12 +20,12 @@ public class BluetoothStateReceiver extends BroadcastReceiver {
         if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
             if (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
                     == BluetoothAdapter.STATE_ON) {
-                    Intent intent1 = new Intent(context, BTTestService.class);
+                    Intent intent1 = new Intent(context, BTFinalService.class);
                 context.startService(intent1);
             }
             else if(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
                     == BluetoothAdapter.STATE_OFF){
-                Intent intent1 = new Intent(context, BTTestService.class);
+                Intent intent1 = new Intent(context, BTFinalService.class);
                 context.stopService(intent1);
             }
         }
