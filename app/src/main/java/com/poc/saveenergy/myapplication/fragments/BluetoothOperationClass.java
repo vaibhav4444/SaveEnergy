@@ -51,7 +51,7 @@ public class BluetoothOperationClass{
     private static String address = "00:06:66:76:A0:AD";
     public BluetoothOperationClass(Activity activity) {
         mActivity = activity;
-        mBeaconUtils = new BeaconUtils(mActivity, this);
+        // = new BeaconUtils(mActivity, this);
     }
     public BluetoothOperationClass() {
 
@@ -254,19 +254,22 @@ public class BluetoothOperationClass{
      * Indicate that the connection was lost and notify the UI Activity.
      */
     private void connectionLost() {
+        isBluetoothConnected = false;
         while (isBluetoothConnected == false) {
             connectBT();
         }
+
         BTTestService.listDevice.clear();
 
     }
     public void closeBtConnection(){
         if(btSocket == null){
             Log.e(LOG_TAG, "bt socket is null");
-            return;
+            //return;
         }
         try {
             btSocket.close();
+            isBluetoothConnected = false;
         } catch (IOException e2) {
             errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
         }

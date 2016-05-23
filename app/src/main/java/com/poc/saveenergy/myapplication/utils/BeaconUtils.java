@@ -9,7 +9,9 @@ import android.widget.Toast;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
+import com.poc.saveenergy.myapplication.activity.MainActivity;
 import com.poc.saveenergy.myapplication.fragments.BluetoothOperationClass;
+import com.poc.saveenergy.myapplication.service.BTFinalService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,23 +22,25 @@ import java.util.concurrent.TimeUnit;
  */
 public class BeaconUtils {
     public static final String LOG_TAG = BeaconUtils.class.getName();
-    private Activity mContext;
+    private MainActivity mContext;
     private BeaconManager beaconManager;
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 59044, 21681);
     //list will contain major id of beacons found
     private List<Integer> majors = new ArrayList<Integer>();
-    private BluetoothOperationClass mBluetoothOperationClass;
+    //private BluetoothOperationClass mBluetoothOperationClass;
     private BluetoothAdapter btAdapter;
+    private BTFinalService mBTFinalService;
 
 
-    public  BeaconUtils(Activity context, BluetoothOperationClass bluetoothOperationClass){
+    public  BeaconUtils(MainActivity context, BTFinalService service){
         mContext = context;
-        mBluetoothOperationClass = bluetoothOperationClass;
+        mBTFinalService = service;
+        //mBluetoothOperationClass = bluetoothOperationClass;
         if(btAdapter == null){
             btAdapter =  BluetoothAdapter.getDefaultAdapter();
         }
         // Configure BeaconManager.
-        beaconManager = new BeaconManager(context);
+        beaconManager = new BeaconManager(mBTFinalService);
         beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 0);
         setupBeaconListener();
         connectToService();
@@ -49,8 +53,8 @@ public class BeaconUtils {
                // postNotification(bcn.getMajor()+"Smart Office:entered region");
                 Log.d("SWEETU","entered region");
 //                postNotification("Entered region");
-                if(BluetoothOperationClass.isBluetoothConnected == false && btAdapter.isEnabled()){
-                    mBluetoothOperationClass.connectBT();
+                if(BTFinalService.isBluetoothConnected == false && btAdapter.isEnabled()){
+                    mBTFinalService.connectBT();
                 }
             }
 
@@ -59,8 +63,8 @@ public class BeaconUtils {
                 //postNotification("Smart Office:exited region"+region.getMajor());
                 Log.d(LOG_TAG,"Exited region");
                 majors.remove(region.getMajor());
-                if(BluetoothOperationClass.isBluetoothConnected == true){
-                    mBluetoothOperationClass.closeBtConnection();
+                if(BTFinalService.isBluetoothConnected == true){
+                    mBTFinalService.closeBtConnection();
                 }
             }
         });
@@ -68,9 +72,9 @@ public class BeaconUtils {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 // Note that results are not delivered on UI thread.
-                mContext.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+               // mBTFinalService.runOnUiThread(new Runnable() {
+                   // @Override
+                   // public void run() {
                         // Note that beacons reported here are already sorted by estimated
                         // distance between device and beacon.
                         //getActionBar().setSubtitle("Found beacons: " + beacons.size());
@@ -83,13 +87,13 @@ public class BeaconUtils {
                                 boolean temp = majors.contains(major);
                                 //postNotification("beacon added to list");
                                 Log.d(LOG_TAG,"Вы зашли на кухню");
-                                Region region = new Region("regionId", beacon.getProximityUUID(), beacon.getMajor(), beacon.getMinor());
+                                Region region1 = new Region("regionId", beacon.getProximityUUID(), beacon.getMajor(), beacon.getMinor());
 
-                                setupExitListener(region);
+                                setupExitListener(region1);
                             }
                         }
-                    }
-                });
+                    //}
+                //});
             }
         });
     }
@@ -118,7 +122,7 @@ public class BeaconUtils {
                 try {
                     beaconManager.startRanging(ALL_ESTIMOTE_BEACONS_REGION);
                 } catch (RemoteException e) {
-                    Toast.makeText(mContext, "Cannot start ranging, something terrible happened",
+                    Toast.makeText(mBTFinalService, "Cannot start ranging, something terrible happened",
                             Toast.LENGTH_LONG).show();
                     Log.e(LOG_TAG, "Cannot start ranging", e);
                 }
