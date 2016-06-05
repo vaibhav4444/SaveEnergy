@@ -4,7 +4,7 @@ package com.poc.saveenergy.myapplication.constants;
  * Created by Vaib on 13-04-2016.
  */
 public class Constants {
-    public static int SPLASH_TIME_OUT = 2000;
+    public static int SPLASH_TIME_OUT = 1000;
     public static final String PREF_KEY_WIFI_NAME = "wifiname";
     public static final String PREF_KEY_USERNAME = "username";
     public static final String PREF_KEY_PASSWORD = "password";

@@ -20,6 +20,7 @@
         <item name="android:padding">5dp</item>
         <item name="android:textSize">20dp</item>
         <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/lightBlue</item>
 
     </style>
     <style name="TextLabel" parent="TextAppearance.Design.Hint">
@@ -31,7 +32,7 @@
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:textSize">20dp</item>
-        <item name="android:textColor">@color/lightBlue</item>
+        <item name="android:textColor">@color/blue</item>
     </style>
 
 </resources>

@@ -1,117 +1,60 @@
-package com.poc.saveenergy.myapplication.activity;
+package com.poc.saveenergy.myapplication.service;
 
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-
-import com.poc.saveenergy.myapplication.R;
-import com.poc.saveenergy.myapplication.adapter.ViewPagerAdapter;
-import com.poc.saveenergy.myapplication.constants.Constants;
-import com.poc.saveenergy.myapplication.fragments.ConfigFragments;
-import com.poc.saveenergy.myapplication.fragments.OnlineFragment;
-import com.poc.saveenergy.myapplication.service.BTFinalService;
-import com.poc.saveenergy.myapplication.service.BTTestService;
+import com.poc.saveenergy.myapplication.fragments.BluetoothOperationClass;
 import com.poc.saveenergy.myapplication.utils.BeaconUtils;
 import com.poc.saveenergy.myapplication.utils.Logger;
-import com.poc.saveenergy.myapplication.utils.UtilityFunctions;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-/*
-links:http://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
+/**
+ * Created by vaibhav.singhal on 5/23/2016.
  */
-
-public class MainActivity extends BaseActivity {
-
-    public static final String LOG_TAG = MainActivity.class.getName();
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    // Well known SPP UUID
+public class BTFinalService extends Service {
     private static final UUID MY_UUID =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // Insert your bluetooth devices MAC address
     private static String address = "00:06:66:76:A0:AD";
-    public static boolean isBluetoothConnected = false;
+    public   static  boolean  isBluetoothConnected = false;
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
     private BeaconUtils mBeaconUtils;
-
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-        startBluetoothOperation();
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        //Assigns the ViewPager to TabLayout.
-        tabLayout.setupWithViewPager(viewPager);
-        UtilityFunctions.enableBT(this);
-        //mBeaconUtils = new BeaconUtils(this);
-        startService(new Intent(this, BTFinalService.class));
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+    public void onCreate() {
+        super.onCreate();
+        //connectBT();
+        mBeaconUtils = new BeaconUtils(null,this);
 
 
     }
-
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
-    }
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    /**
-     * Defines the number of tabs by setting appropriate fragment and tab name.
-     * @param viewPager
-     */
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ConfigFragments(), Constants.FRAGMENT_CONFIG);
-       // adapter.addFragment(new FunctionsFragment(), Constants.FRAGMENT_FUNCTION);
-        adapter.addFragment(new OnlineFragment(), Constants.FRAGMENT_ONLINE);
-        viewPager.setAdapter(adapter);
-    }
-    private void startBluetoothOperation(){
-        //BluetoothOperationClass bluetoothOperationClass = new BluetoothOperationClass(this);
-        //bluetoothOperationClass.connectBT();
-
+        return super.onStartCommand(intent, flags, startId);
     }
     public void connectBT(){
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if(btAdapter == null) {
+            btAdapter = BluetoothAdapter.getDefaultAdapter();
+        }
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
 
         // Two things are needed to make a connection:
@@ -242,4 +185,11 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mBeaconUtils != null){
+            mBeaconUtils.stopBeaconSearch();
+        }
+    }
 }

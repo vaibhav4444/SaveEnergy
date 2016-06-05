@@ -8,16 +8,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
-import com.poc.saveenergy.myapplication.constants.Constants;
-import com.poc.saveenergy.myapplication.fragments.FunctionsFragment;
+import com.poc.saveenergy.myapplication.fragments.BluetoothOperationClass;
 import com.poc.saveenergy.myapplication.utils.Logger;
 
 import java.io.IOException;
@@ -38,7 +35,7 @@ public class BTTestService extends Service {
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
     private ReadInputThread readInputThread;
-    private FunctionsFragment functionsFragment = null;
+    private BluetoothOperationClass bluetoothOperationClass = null;
     public static ArrayList<Integer> listDevice = new ArrayList<Integer>();
 
     // Well known SPP UUID
@@ -65,8 +62,8 @@ public class BTTestService extends Service {
         if(btAdapter == null){
             btAdapter =  BluetoothAdapter.getDefaultAdapter();
         }
-        if(functionsFragment == null){
-            functionsFragment = new FunctionsFragment();
+        if(bluetoothOperationClass == null){
+            bluetoothOperationClass = new BluetoothOperationClass();
         }
        registerReceiverForIntentFilter();
         listDevice.clear();
@@ -95,7 +92,7 @@ public class BTTestService extends Service {
                     btAdapter.cancelDiscovery();
                     listDevice.add(1);
                     //connectBT();
-                    functionsFragment.connectBT();
+                    bluetoothOperationClass.connectBT();
 
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

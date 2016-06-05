@@ -1,6 +1,8 @@
 package com.poc.saveenergy.myapplication.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -13,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.activity.MainActivity;
@@ -64,9 +67,25 @@ public class ConfigFragments extends BaseFragment {
 
     @Override
     protected void initViews(View mFragmentView) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+       builder1.setIcon(R.mipmap.app_icon);
+        builder1.setTitle("Health Alert");
+        builder1.setMessage("It's been longer than 30 minutes, you should probably take short walk.");
+
+        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert11 = builder1.create();
+        //alert11.show();
+
         editText_WiFiName = (EditText) mFragmentView.findViewById(R.id.edtWifiName);
         editText_username = (EditText) mFragmentView.findViewById(R.id.edt_username);
         editText_password = (EditText) mFragmentView.findViewById(R.id.edt_password);
+
        // txt_wifi = (TextInputLayout)mFragmentView.findViewById(R.id.txt_wifi);
         //txt_username = (TextInputLayout)mFragmentView.findViewById(R.id.txt_username);
         //txt_password = (TextInputLayout)mFragmentView.findViewById(R.id.txt_password);
@@ -96,6 +115,7 @@ public class ConfigFragments extends BaseFragment {
     public void onResume() {
         super.onResume();
         fillEditText();
+        UtilityFunctions.hideKeyboard(getActivity(), editText_WiFiName);
     }
 
     /**
@@ -116,6 +136,7 @@ public class ConfigFragments extends BaseFragment {
      * save details in preference
      */
     private void saveDetails(){
+        UtilityFunctions.createNotification(getActivity());
        if(isError()){
            return;
        }
@@ -125,9 +146,10 @@ public class ConfigFragments extends BaseFragment {
         prefs.put(Constants.PREF_KEY_WIFI_NAME, editText_WiFiName.getText().toString());
         prefs.put(Constants.PREF_KEY_USERNAME, editText_username.getText().toString());
         prefs.put(Constants.PREF_KEY_PASSWORD, editText_password.getText().toString());
-        Snackbar snackbar = Snackbar
-                .make(mMainActivity.getmCoordinatorLayout(), mMainActivity.getResources().getString(R.string.wifiSaved)+SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_WIFI_NAME), Snackbar.LENGTH_LONG);
-        snackbar.show();
+       /* Snackbar snackbar = Snackbar
+                .make(mMainActivity.getmCoordinatorLayout(), R.string.de, Snackbar.LENGTH_LONG);
+        snackbar.show(); */
+        Toast.makeText(getActivity(), R.string.detailSaved, Toast.LENGTH_LONG).show();
 
     }
     private boolean isError(){

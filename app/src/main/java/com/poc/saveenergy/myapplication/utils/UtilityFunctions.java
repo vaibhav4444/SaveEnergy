@@ -1,12 +1,21 @@
 package com.poc.saveenergy.myapplication.utils;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.poc.saveenergy.myapplication.R;
+import com.poc.saveenergy.myapplication.activity.MainActivity;
 
 /**
  * Created by vaibhav.singhal on 4/14/2016.
@@ -60,6 +69,28 @@ public class UtilityFunctions {
             final InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
+    }
+    public static void createNotification(Context context){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                R.mipmap.app_icon);
+        mBuilder.setSmallIcon(R.mipmap.app_icon);
+        mBuilder.setLargeIcon(icon);
+        mBuilder.setContentTitle(context.getResources().getString(R.string.app_name)+": "+"Health Alert");
+        mBuilder.setContentText("Time to take short walk.");
+        Intent resultIntent = new Intent(context, MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+// notificationID allows you to update the notification later on.
+        mNotificationManager.notify(1, mBuilder.build());
 
     }
 }

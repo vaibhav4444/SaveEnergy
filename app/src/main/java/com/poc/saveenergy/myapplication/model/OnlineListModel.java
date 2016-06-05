@@ -9,6 +9,16 @@ public class OnlineListModel {
 
     private String name;
     private boolean isOnline;
+
+    public int getImageResource() {
+        return imageResource;
+    }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
+    }
+
+    private int imageResource = 0;
     public String getName() {
         return name;
     }
@@ -24,4 +34,5 @@ public class OnlineListModel {
     public void setIsOnline(boolean isOnline) {
         this.isOnline = isOnline;
     }
+
 }
