@@ -17,6 +17,7 @@ import com.poc.saveenergy.myapplication.utils.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 /**
@@ -33,6 +34,7 @@ public class BTFinalService extends Service {
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
     private BeaconUtils mBeaconUtils;
+    private BluetoothSocketWrapper bluetoothSocket;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -62,18 +64,21 @@ public class BTFinalService extends Service {
         //   A Service ID or UUID.  In this case we are using the
         //     UUID for SPP.
         try {
-            if(device != null)
+            if(device != null) {
                 btSocket = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+                bluetoothSocket = new NativeBluetoothSocket(btSocket);
+            }
+
             else{
                 isBluetoothConnected = false;
-                connectBT();
+                //connectBT();
                 return;
             }
 
         } catch (IOException e) {
             isBluetoothConnected = false;
             errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
-            connectBT();
+            //connectBT();
             return;
         }
 
@@ -84,17 +89,33 @@ public class BTFinalService extends Service {
         // Establish the connection.  This will block until it connects.
         Log.d("TAG", "...Connecting to Remote...");
         try {
-            btSocket.connect();
+
+            //btSocket.connect();
+            bluetoothSocket.connect();
             isBluetoothConnected = true;
             Log.d("TAG", "...Connection established and data link opened...");
         } catch (IOException e) {
-            isBluetoothConnected = false;
+            /*isBluetoothConnected = false;
             try {
                 btSocket.close();
             } catch (IOException e2) {
                 errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
-                connectBT();
+                //connectBT();
                 return;
+            } */
+            //try the fallback
+            try {
+                bluetoothSocket = new FallbackBluetoothSocket(bluetoothSocket.getUnderlyingSocket());
+                Thread.sleep(500);
+                bluetoothSocket.connect();
+                isBluetoothConnected = true;
+               // break;
+            } catch (FallbackException e1) {
+                Log.w("BT", "Could not initialize FallbackBluetoothSocket classes.", e);
+            } catch (InterruptedException e1) {
+                Log.w("BT", e1.getMessage(), e1);
+            } catch (IOException e1) {
+                Log.w("BT", "Fallback failed. Cancelling.", e1);
             }
         }
 
@@ -102,13 +123,14 @@ public class BTFinalService extends Service {
         Log.d("TAG", "...Creating Socket...");
 
         try {
-            outStream = btSocket.getOutputStream();
+             outStream = btSocket.getOutputStream();
         } catch (IOException e) {
             errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
         }
-
-        ReadInputThread readInputThread = new ReadInputThread(btSocket);
-        readInputThread.start();
+        if(isBluetoothConnected) {
+             ReadInputThread readInputThread = new ReadInputThread(btSocket);
+            readInputThread.start();
+        }
     }
     private void errorExit(String title, String message){
         Toast msg = Toast.makeText(this,
@@ -162,8 +184,16 @@ public class BTFinalService extends Service {
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
-    private void connectionLost() {
+     private void connectionLost() {
         isBluetoothConnected = false;
+        try {
+            if(btSocket != null)
+            btSocket.close();
+        } catch (IOException e2) {
+            errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
+            //connectBT();
+            return;
+        }
         // no need to do this thing as will be handled by beacon
         /*while (isBluetoothConnected == false) {
             connectBT();
@@ -173,14 +203,15 @@ public class BTFinalService extends Service {
 
     }
     public void closeBtConnection(){
-        if(btSocket == null){
-            Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
+        //if(btSocket == null){
+            //Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
             //return;
-        }
+       // }
         try {
             btSocket.close();
             isBluetoothConnected = false;
         } catch (IOException e2) {
+           e2.printStackTrace();
             errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
         }
     }
@@ -192,4 +223,125 @@ public class BTFinalService extends Service {
             mBeaconUtils.stopBeaconSearch();
         }
     }
+
+    //new code
+    public static interface BluetoothSocketWrapper {
+
+        InputStream getInputStream() throws IOException;
+
+        OutputStream getOutputStream() throws IOException;
+
+        String getRemoteDeviceName();
+
+        void connect() throws IOException;
+
+        String getRemoteDeviceAddress();
+
+        void close() throws IOException;
+
+        BluetoothSocket getUnderlyingSocket();
+
+    }
+
+    public static class NativeBluetoothSocket implements BluetoothSocketWrapper {
+
+        private BluetoothSocket socket;
+
+        public NativeBluetoothSocket(BluetoothSocket tmp) {
+            this.socket = tmp;
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return socket.getInputStream();
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            return socket.getOutputStream();
+        }
+
+        @Override
+        public String getRemoteDeviceName() {
+            return socket.getRemoteDevice().getName();
+        }
+
+        @Override
+        public void connect() throws IOException {
+            socket.connect();
+        }
+
+        @Override
+        public String getRemoteDeviceAddress() {
+            return socket.getRemoteDevice().getAddress();
+        }
+
+        @Override
+        public void close() throws IOException {
+            socket.close();
+        }
+
+        @Override
+        public BluetoothSocket getUnderlyingSocket() {
+            return socket;
+        }
+
+    }
+    public static class FallbackException extends Exception {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        public FallbackException(Exception e) {
+            super(e);
+        }
+
+    }
+    public class FallbackBluetoothSocket extends NativeBluetoothSocket {
+
+        private BluetoothSocket fallbackSocket;
+
+        public FallbackBluetoothSocket(BluetoothSocket tmp) throws FallbackException {
+            super(tmp);
+            try
+            {
+                Class<?> clazz = tmp.getRemoteDevice().getClass();
+                Class<?>[] paramTypes = new Class<?>[] {Integer.TYPE};
+                Method m = clazz.getMethod("createInsecureRfcommSocket", paramTypes);
+                Object[] params = new Object[] {Integer.valueOf(1)};
+                fallbackSocket = (BluetoothSocket) m.invoke(tmp.getRemoteDevice(), params);
+            }
+            catch (Exception e)
+            {
+                throw new FallbackException(e);
+            }
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return fallbackSocket.getInputStream();
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            return fallbackSocket.getOutputStream();
+        }
+
+
+        @Override
+        public void connect() throws IOException {
+            fallbackSocket.connect();
+        }
+
+
+        @Override
+        public void close() throws IOException {
+            fallbackSocket.close();
+        }
+
+    }
+
+
+
 }

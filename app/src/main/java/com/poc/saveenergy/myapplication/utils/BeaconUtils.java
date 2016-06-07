@@ -30,6 +30,7 @@ public class BeaconUtils {
     //private BluetoothOperationClass mBluetoothOperationClass;
     private BluetoothAdapter btAdapter;
     private BTFinalService mBTFinalService;
+    private boolean isBluetoothConnecting = false;
 
 
     public  BeaconUtils(MainActivity context, BTFinalService service){
@@ -53,8 +54,10 @@ public class BeaconUtils {
                // postNotification(bcn.getMajor()+"Smart Office:entered region");
                 Log.d("SWEETU","entered region");
 //                postNotification("Entered region");
-                if(BTFinalService.isBluetoothConnected == false && btAdapter.isEnabled()){
-                    mBTFinalService.connectBT();
+                if(BTFinalService.isBluetoothConnected == false && btAdapter.isEnabled() && !isBluetoothConnecting){
+                    isBluetoothConnecting = true;
+                    //mBTFinalService.connectBT();
+                    isBluetoothConnecting = false;
                 }
             }
 
@@ -80,13 +83,23 @@ public class BeaconUtils {
                         //getActionBar().setSubtitle("Found beacons: " + beacons.size());
                         int count = beacons.size();
 
+
+                if(count == 1 && BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting){
+                    isBluetoothConnecting = true;
+                    mBTFinalService.connectBT();
+                    isBluetoothConnecting = false;
+                }
+
                         for(Beacon beacon:beacons){
                             int major = beacon.getMajor();
-                            if(major == 59044){
-                                if(BTFinalService.isBluetoothConnected == false){
+                            /*if(major == 59044){
+                                if(BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting){
+                                    isBluetoothConnecting = true;
                                     mBTFinalService.connectBT();
+                                    isBluetoothConnecting = false;
                                 }
-                            }
+                            } */
+
                             boolean ifContain = majors.contains(major);
                             if(!majors.contains(major)){
                                 majors.add(major);
