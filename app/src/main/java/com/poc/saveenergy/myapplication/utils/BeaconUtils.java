@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class BeaconUtils {
     public static final String LOG_TAG = BeaconUtils.class.getName();
-    private MainActivity mContext;
+    private BTFinalService mContext;
     private static BeaconManager beaconManager;
     private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 59044, 21681);
     //list will contain major id of beacons found
@@ -31,9 +31,11 @@ public class BeaconUtils {
     private BluetoothAdapter btAdapter;
     private BTFinalService mBTFinalService;
     private boolean isBluetoothConnecting = false;
+    private static int mCount;
+    private int mCountZero = 0;
 
 
-    public  BeaconUtils(MainActivity context, BTFinalService service){
+    public  BeaconUtils(BTFinalService context, BTFinalService service){
         mContext = context;
         mBTFinalService = service;
         //mBluetoothOperationClass = bluetoothOperationClass;
@@ -66,8 +68,16 @@ public class BeaconUtils {
                 //postNotification("Smart Office:exited region"+region.getMajor());
                 Log.d(LOG_TAG,"Exited region");
                 majors.remove(region.getMajor());
-                if(BTFinalService.isBluetoothConnected == true){
-                    mBTFinalService.closeBtConnection();
+                /*try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } */
+                Log.i("tagE**","tagE** on exit before disconnect"+mCountZero);
+                if(BTFinalService.isBluetoothConnected == true && mCountZero > 7){
+                    Log.i("tagE**", "tagE** on exit disconnect called" + mCountZero);
+                    Toast.makeText(mContext, "Trying to disconnect", Toast.LENGTH_LONG).show();
+                    //mBTFinalService.closeBtConnection();
                 }
             }
         });
@@ -75,23 +85,36 @@ public class BeaconUtils {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
                 // Note that results are not delivered on UI thread.
-               // mBTFinalService.runOnUiThread(new Runnable() {
-                   // @Override
-                   // public void run() {
-                        // Note that beacons reported here are already sorted by estimated
-                        // distance between device and beacon.
-                        //getActionBar().setSubtitle("Found beacons: " + beacons.size());
-                        int count = beacons.size();
+                // mBTFinalService.runOnUiThread(new Runnable() {
+                // @Override
+                // public void run() {
+                // Note that beacons reported here are already sorted by estimated
+                // distance between device and beacon.
+                //getActionBar().setSubtitle("Found beacons: " + beacons.size());
+                int count = beacons.size();
+                mCount = beacons.size();
+                if (count == 1) {
+                    mCountZero = 0;
+                    Log.i("tagE**", "tagE**From if count == 1");
+                }
 
-
-                if(count == 1 && BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting){
+                if (count == 1 && BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting) {
+                    Toast.makeText(mContext, "Trying to connect", Toast.LENGTH_LONG).show();
                     isBluetoothConnecting = true;
                     mBTFinalService.connectBT();
                     isBluetoothConnecting = false;
                 }
+                if (count == 0) {
+                    mCountZero++;
+                    if(mCountZero == 8){
+                        mBTFinalService.closeBtConnection();
+                    }
+                    Log.i("tagE**", "tagE** zero:" + mCount);
+                }
 
-                        for(Beacon beacon:beacons){
-                            int major = beacon.getMajor();
+                for (Beacon beacon : beacons) {
+                    int major = beacon.getMajor();
+                    Log.i("tagE**", "tagE** rssi:" + beacon.getRssi());
                             /*if(major == 59044){
                                 if(BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting){
                                     isBluetoothConnecting = true;
@@ -100,18 +123,18 @@ public class BeaconUtils {
                                 }
                             } */
 
-                            boolean ifContain = majors.contains(major);
-                            if(!majors.contains(major)){
-                                majors.add(major);
-                                boolean temp = majors.contains(major);
-                                //postNotification("beacon added to list");
-                                Log.d(LOG_TAG,"Вы зашли на кухню");
-                                Region region1 = new Region("regionId", beacon.getProximityUUID(), beacon.getMajor(), beacon.getMinor());
+                    boolean ifContain = majors.contains(major);
+                    if (!majors.contains(major)) {
+                        majors.add(major);
+                        boolean temp = majors.contains(major);
+                        //postNotification("beacon added to list");
+                        Log.d(LOG_TAG, "Вы зашли на кухню");
+                        Region region1 = new Region("regionId", beacon.getProximityUUID(), beacon.getMajor(), beacon.getMinor());
 
-                                setupExitListener(region1);
-                            }
-                        }
-                    //}
+                        setupExitListener(region1);
+                    }
+                }
+                //}
                 //});
             }
         });
