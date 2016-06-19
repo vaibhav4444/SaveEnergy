@@ -18,10 +18,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.estimote.sdk.repackaged.gson_v2_3_1.com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.poc.saveenergy.myapplication.R;
 import com.poc.saveenergy.myapplication.adapter.OnlineListAdapter;
+import com.poc.saveenergy.myapplication.interfaces.AsyncResponse;
 import com.poc.saveenergy.myapplication.model.OnlineListModel;
+import com.poc.saveenergy.myapplication.utils.MongoLabUtil;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +42,7 @@ public class OnlineFragment extends Fragment {
     private List<OnlineListModel> list_userStatus, list_userCopy;
     private RecyclerView mUserStatusRecyclerView;
     private OnlineListAdapter  onlineListAdapter ;
+    private MongoLabUtil mMangoLabUtil;
 
     public OnlineFragment() {
         // Required empty public constructor
@@ -47,7 +53,10 @@ public class OnlineFragment extends Fragment {
         super.onCreate(savedInstanceState);
         list_userStatus = new ArrayList<OnlineListModel>();
         list_userCopy = new ArrayList<OnlineListModel>();
-        OnlineListModel model1 = new OnlineListModel();
+        mMangoLabUtil = new MongoLabUtil();
+
+
+        /*OnlineListModel model1 = new OnlineListModel();
         model1.setName("Tej");
         model1.setIsOnline(true);
         model1.setImageResource(R.drawable.tej);
@@ -77,7 +86,7 @@ public class OnlineFragment extends Fragment {
         list_userStatus.add(model5);
         list_userStatus.add(model6);
         list_userStatus.add(model7);
-        list_userCopy.addAll(list_userStatus);
+        list_userCopy.addAll(list_userStatus); */
 
 
 
@@ -109,14 +118,16 @@ public class OnlineFragment extends Fragment {
         mWaveSwipeRefreshLayout = (WaveSwipeRefreshLayout) view.findViewById(R.id.main_swipe);
         //mWaveSwipeRefreshLayout.setColorSchemeColors(Color.WHITE, Color.WHITE);
         //mWaveSwipeRefreshLayout.setWaveColor(Color.argb(100, 255, 0, 0));
+        prepareRecyclerView(view);
+        getUserOnlineStatus();
         mWaveSwipeRefreshLayout.setOnRefreshListener(new WaveSwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Do work to refresh the list here.
-                new Task().execute();
+                getUserOnlineStatus();
             }
         });
-        prepareRecyclerView(view);
+
         setHasOptionsMenu(true);
         return view;
     }
@@ -167,5 +178,36 @@ public class OnlineFragment extends Fragment {
             }
         }
         return filteredModelList;
+    }
+    private void getUserOnlineStatus(){
+        // Call setRefreshing(false) when the list has been refreshed.
+        mWaveSwipeRefreshLayout.setRefreshing(true);
+        mMangoLabUtil.getData(new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                com.google.gson.Gson gson = new com.google.gson.Gson();
+                Type listType = new TypeToken<List<OnlineListModel>>(){}.getType();
+                list_userStatus= (List<OnlineListModel>) gson.fromJson(output, listType);
+                list_userCopy.addAll(list_userStatus);
+                for (OnlineListModel onlineListModel: list_userStatus){
+                    String name =  onlineListModel.getName();
+                    if(name.equalsIgnoreCase("vaibhav")){
+                        onlineListModel.setImageResource(R.drawable.vaib);
+                    }
+                    else if(name.equalsIgnoreCase("tej")){
+                        onlineListModel.setImageResource(R.drawable.tej);
+                    }
+                    else if(name.equalsIgnoreCase("naval")){
+                        onlineListModel.setImageResource(R.drawable.naval);
+                    }
+                }
+                //gson.fromJson(output, OnlineListModel.class);
+                onlineListAdapter = new OnlineListAdapter(list_userStatus);
+                mUserStatusRecyclerView.setAdapter(onlineListAdapter);
+                // Call setRefreshing(false) when the list has been refreshed.
+                mWaveSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
     }
 }

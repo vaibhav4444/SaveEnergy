@@ -24,7 +24,7 @@ public class Constants {
 
     //MongoLab Constants
     private static final String MONGO_KEY = "veTqID_gkb74tG-yL4MGcS1p2RRBP1Pf";
-    public static final String MOGO_URL = "https://api.mongolab.com/api/1/databases/geolocation/collections/boom?apiKey=" + MONGO_KEY;
+    public static final String MOGO_URL = "https://api.mongolab.com/api/1/databases/geolocation/collections/onlinedb?apiKey=" + MONGO_KEY;
 
 
 }

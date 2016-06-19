@@ -54,4 +54,5 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.squareup.picasso:picasso:2.5.0'
     compile 'com.estimote:sdk:0.8.7@aar'
+    compile 'com.google.code.gson:gson:2.2.4'
 }
