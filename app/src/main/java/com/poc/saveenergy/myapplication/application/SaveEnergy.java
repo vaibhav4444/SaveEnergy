@@ -1,7 +1,11 @@
 package com.poc.saveenergy.myapplication.application;
 
 import android.app.Application;
+import android.content.Context;
+
 import com.crashlytics.android.Crashlytics;
+import com.poc.saveenergy.myapplication.utils.TumakuBLE;
+
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -24,5 +28,15 @@ public class SaveEnergy extends Application {
             prefs = new Prefs(this);
         }
         return  prefs;
+    }
+    static TumakuBLE mTumakuBLE;
+
+    public void resetTumakuBLE(){
+        TumakuBLE.resetTumakuBLE();
+    }
+
+    public TumakuBLE getTumakuBLEInstance(Context context){
+        mTumakuBLE= TumakuBLE.getInstance(context);
+        return mTumakuBLE;
     }
 }

@@ -21,6 +21,8 @@ public class Constants {
     // Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
+    public static boolean DEBUG =true;
+
 
     //MongoLab Constants
     private static final String MONGO_KEY = "veTqID_gkb74tG-yL4MGcS1p2RRBP1Pf";

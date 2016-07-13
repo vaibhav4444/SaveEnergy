@@ -10,9 +10,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.poc.saveenergy.myapplication.application.SaveEnergy;
 import com.poc.saveenergy.myapplication.fragments.BluetoothOperationClass;
 import com.poc.saveenergy.myapplication.utils.BeaconUtils;
 import com.poc.saveenergy.myapplication.utils.Logger;
+import com.poc.saveenergy.myapplication.utils.TumakuBLE;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,7 @@ import java.util.UUID;
 /**
  * Created by vaibhav.singhal on 5/23/2016.
  */
-public class BTFinalService extends Service {
+public class BTFinalService extends Service implements BluetoothAdapter.LeScanCallback {
     private static final UUID MY_UUID =
             UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
@@ -35,6 +37,9 @@ public class BTFinalService extends Service {
     private OutputStream outStream = null;
     private BeaconUtils mBeaconUtils;
     private BluetoothSocketWrapper bluetoothSocket;
+    private TumakuBLE mTumakuBLE;
+    private boolean isBluetoothConnecting = false;
+    private int isConnectCount = 0, isDisconnectCount = 0;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,13 +48,16 @@ public class BTFinalService extends Service {
     public void onCreate() {
         super.onCreate();
         //connectBT();
-        mBeaconUtils = new BeaconUtils(null,this);
+        //mBeaconUtils = new BeaconUtils(this,this);
+        ((SaveEnergy)getApplication()).resetTumakuBLE();
+        mTumakuBLE=((SaveEnergy)getApplication()).getTumakuBLEInstance(this);
 
 
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        TumakuBLE.setup();
+        mTumakuBLE.startLeScan();
         return super.onStartCommand(intent, flags, startId);
     }
     public void connectBT(){
@@ -168,7 +176,7 @@ public class BTFinalService extends Service {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 
-
+                    Toast.makeText(BTFinalService.this, "Connected", Toast.LENGTH_LONG).show();
 
                 } catch (IOException e) {
                     Logger.error("TAG", "disconnected", e);
@@ -187,6 +195,7 @@ public class BTFinalService extends Service {
      private void connectionLost() {
         isBluetoothConnected = false;
         try {
+            //Toast.makeText(BTFinalService.this, "connection lost() called", Toast.LENGTH_LONG).show();
             if(btSocket != null)
             btSocket.close();
         } catch (IOException e2) {
@@ -207,6 +216,7 @@ public class BTFinalService extends Service {
             //Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
             //return;
        // }
+        Toast.makeText(this, "closeBtConnection() called", Toast.LENGTH_LONG).show();
         try {
             btSocket.close();
             isBluetoothConnected = false;
@@ -340,6 +350,34 @@ public class BTFinalService extends Service {
             fallbackSocket.close();
         }
 
+    }
+    @Override
+    public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+        Log.i("tag","rssi"+rssi);
+        Log.i("tag","rssi"+rssi);
+        if(rssi <= 80){
+            isDisconnectCount = 0;
+            isConnectCount++;
+        }
+        else if(rssi > 80){
+            isConnectCount = 0;
+            isDisconnectCount++;
+        }
+        if (isConnectCount > 5 &&BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting) {
+            Toast.makeText(this, "Trying to connect", Toast.LENGTH_LONG).show();
+            isBluetoothConnecting = true;
+            connectBT();
+            isBluetoothConnecting = false;
+        }
+        else if(isDisconnectCount >5){
+            Toast.makeText(this, "Trying to disconnect", Toast.LENGTH_LONG).show();
+            closeBtConnection();
+        }
+        Toast.makeText(this, "connect: "+isConnectCount+" disconnect: "+isDisconnectCount+" rssi: "+rssi, Toast.LENGTH_LONG).show();
+        if(isDisconnectCount >40 || isConnectCount >40){
+            isDisconnectCount = 0;
+            isConnectCount = 0;
+        }
     }
 
 

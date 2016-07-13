@@ -24,7 +24,8 @@ public class BeaconUtils {
     public static final String LOG_TAG = BeaconUtils.class.getName();
     private BTFinalService mContext;
     private static BeaconManager beaconManager;
-    private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 59044, 21681);
+    //private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", "B9407F30-F5F8-466E-AFF9-25556B57FE6D", 59044, 21681);
+    private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", "b9407f30-f5f8-466e-aff9-25556b57fe6d", 41427, 55359);
     //list will contain major id of beacons found
     private List<Integer> majors = new ArrayList<Integer>();
     //private BluetoothOperationClass mBluetoothOperationClass;
