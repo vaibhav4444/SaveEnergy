@@ -222,6 +222,10 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
             return;
        }
         Toast.makeText(this, "closeBtConnection() called", Toast.LENGTH_LONG).show();
+        if(btSocket == null){
+            Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
+            return;
+       }
         try {
             btSocket.close();
             isBluetoothConnected = false;
