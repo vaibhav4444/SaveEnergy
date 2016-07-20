@@ -203,10 +203,10 @@ public class BTFinalService extends Service {
 
     }
     public void closeBtConnection(){
-        //if(btSocket == null){
-            //Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
-            //return;
-       // }
+        if(btSocket == null){
+            Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
+            return;
+       }
         try {
             btSocket.close();
             isBluetoothConnected = false;
