@@ -186,24 +186,25 @@ public class OnlineFragment extends Fragment {
             @Override
             public void processFinish(String output) {
                 com.google.gson.Gson gson = new com.google.gson.Gson();
-                Type listType = new TypeToken<List<OnlineListModel>>(){}.getType();
-                list_userStatus= (List<OnlineListModel>) gson.fromJson(output, listType);
+                Type listType = new TypeToken<List<OnlineListModel>>() {
+                }.getType();
+                list_userStatus = (List<OnlineListModel>) gson.fromJson(output, listType);
+                if (list_userStatus != null){
                 list_userCopy.addAll(list_userStatus);
-                for (OnlineListModel onlineListModel: list_userStatus){
-                    String name =  onlineListModel.getName();
-                    if(name.equalsIgnoreCase("vaibhav")){
+                for (OnlineListModel onlineListModel : list_userStatus) {
+                    String name = onlineListModel.getName();
+                    if (name.equalsIgnoreCase("vaibhav")) {
                         onlineListModel.setImageResource(R.drawable.vaib);
-                    }
-                    else if(name.equalsIgnoreCase("tej")){
+                    } else if (name.equalsIgnoreCase("tej")) {
                         onlineListModel.setImageResource(R.drawable.tej);
-                    }
-                    else if(name.equalsIgnoreCase("naval")){
+                    } else if (name.equalsIgnoreCase("naval")) {
                         onlineListModel.setImageResource(R.drawable.naval);
                     }
                 }
                 //gson.fromJson(output, OnlineListModel.class);
                 onlineListAdapter = new OnlineListAdapter(list_userStatus);
                 mUserStatusRecyclerView.setAdapter(onlineListAdapter);
+            }
                 // Call setRefreshing(false) when the list has been refreshed.
                 mWaveSwipeRefreshLayout.setRefreshing(false);
             }

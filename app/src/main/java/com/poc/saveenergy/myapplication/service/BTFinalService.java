@@ -79,12 +79,14 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
 
             else{
                 isBluetoothConnected = false;
+                isBluetoothConnecting = false;
                 //connectBT();
                 return;
             }
 
         } catch (IOException e) {
             isBluetoothConnected = false;
+            isBluetoothConnecting = false;
             errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
             //connectBT();
             return;
@@ -101,6 +103,7 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
             //btSocket.connect();
             bluetoothSocket.connect();
             isBluetoothConnected = true;
+            isBluetoothConnecting = false;
             Log.d("TAG", "...Connection established and data link opened...");
         } catch (IOException e) {
             /*isBluetoothConnected = false;
@@ -117,6 +120,7 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
                 Thread.sleep(500);
                 bluetoothSocket.connect();
                 isBluetoothConnected = true;
+                isBluetoothConnecting = false;
                // break;
             } catch (FallbackException e1) {
                 Log.w("BT", "Could not initialize FallbackBluetoothSocket classes.", e);
@@ -212,10 +216,11 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
 
     }
     public void closeBtConnection(){
-        //if(btSocket == null){
-            //Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
-            //return;
-       // }
+         Log.e("tagE", "tagE" +" within closeBT");
+        if(btSocket == null){
+            Toast.makeText(this, "bt socket is null", Toast.LENGTH_LONG).show();
+            return;
+       }
         Toast.makeText(this, "closeBtConnection() called", Toast.LENGTH_LONG).show();
         try {
             btSocket.close();
@@ -353,30 +358,49 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
     }
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-        Log.i("tag","rssi"+rssi);
-        Log.i("tag","rssi"+rssi);
-        if(rssi <= 80){
+        Log.e("tagE","tagE" +Math.abs(rssi));
+        Log.e("tagE", "tagE" +rssi);
+
+        //Toast.makeText(this, "c: "+isConnectCount+" dc: "+isDisconnectCount+" rssi: "+rssi, Toast.LENGTH_LONG).show();
+        int newRssi = Math.abs(rssi);
+        Log.e("tagE", "tagE" +" new rssi "+newRssi);
+        if(newRssi < 80){
+            Log.e("tagE", "tagE" +" count connect"+isConnectCount);
             isDisconnectCount = 0;
-            isConnectCount++;
+            isConnectCount = isConnectCount + 1;
+            Log.e("tagE", "tagE" +" after increment count connect"+isConnectCount);
         }
-        else if(rssi > 80){
+        else if(newRssi >= 80){
+             Log.e("tagE", "tagE" +" count disconnect"+isDisconnectCount);
             isConnectCount = 0;
-            isDisconnectCount++;
+            isDisconnectCount= isDisconnectCount + 1;
+            Log.e("tagE", "tagE" +" after increment count disconnect"+isDisconnectCount);
         }
-        if (isConnectCount > 5 &&BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting) {
+        if (isConnectCount > 3 &&BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting) {
+             Log.e("tagE", "tagE" +"trying to connect");
             Toast.makeText(this, "Trying to connect", Toast.LENGTH_LONG).show();
             isBluetoothConnecting = true;
-            connectBT();
-            isBluetoothConnecting = false;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                     connectBT();
+                }
+            }).start();
+
+            //isBluetoothConnecting = false;
         }
-        else if(isDisconnectCount >5){
+        else if(isDisconnectCount >4){
+             Log.e("tagE", "tagE" +"trying to dis-connect");
             Toast.makeText(this, "Trying to disconnect", Toast.LENGTH_LONG).show();
             closeBtConnection();
         }
-        Toast.makeText(this, "connect: "+isConnectCount+" disconnect: "+isDisconnectCount+" rssi: "+rssi, Toast.LENGTH_LONG).show();
-        if(isDisconnectCount >40 || isConnectCount >40){
-            isDisconnectCount = 0;
+
+        if(isDisconnectCount >40){
+
             isConnectCount = 0;
+        }
+        if(isDisconnectCount>40){
+            isDisconnectCount = 0;
         }
     }
 
