@@ -129,12 +129,15 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
             } catch (IOException e1) {
                 Log.w("BT", "Fallback failed. Cancelling.", e1);
             }
+            isBluetoothConnecting = false;
         }
 
         // Create a data stream so we can talk to server.
         Log.d("TAG", "...Creating Socket...");
 
         try {
+            //isBluetoothConnected = true;
+            isBluetoothConnecting = false;
              outStream = btSocket.getOutputStream();
         } catch (IOException e) {
             errorExit("Fatal Error", "In onResume() and output stream creation failed:" + e.getMessage() + ".");
@@ -380,7 +383,7 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
             isDisconnectCount= isDisconnectCount + 1;
             Log.e("tagE", "tagE" +" after increment count disconnect"+isDisconnectCount);
         }
-        if (isConnectCount > 3 &&BTFinalService.isBluetoothConnected == false && !isBluetoothConnecting) {
+        if (isConnectCount >= 3 && (btSocket == null || (btSocket != null && !btSocket.isConnected())) && !isBluetoothConnecting) {
              Log.e("tagE", "tagE" +"trying to connect");
             Toast.makeText(this, "Trying to connect", Toast.LENGTH_LONG).show();
             isBluetoothConnecting = true;
@@ -393,13 +396,13 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
 
             //isBluetoothConnecting = false;
         }
-        else if(isDisconnectCount >4){
+        else if(isDisconnectCount >=3 && btSocket != null && btSocket.isConnected()){
              Log.e("tagE", "tagE" +"trying to dis-connect");
             Toast.makeText(this, "Trying to disconnect", Toast.LENGTH_LONG).show();
             closeBtConnection();
         }
 
-        if(isDisconnectCount >40){
+        if(isConnectCount >40){
 
             isConnectCount = 0;
         }
