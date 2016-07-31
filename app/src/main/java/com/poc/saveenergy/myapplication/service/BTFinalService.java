@@ -171,6 +171,7 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
             }
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+            write();
         }
         public void run() {
             Logger.debug("TAG", "BEGIN mConnectedThread");
@@ -194,8 +195,28 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
                 }
             }
         }
+        /**
+         * Write to the connected OutStream.
+         *
+         *
+         */
+        public void write() {
+            if(mmOutStream == null){
+                Log.e("BtFinalService", "output stream is null");
+                return;
+            }
+            String password = "";
+            byte[] buffer = password.getBytes();
+            try {
+                mmOutStream.write(buffer);
+
+            } catch (IOException e) {
+                Log.e("BtFinalService", "Exception during write", e);
+            }
+        }
 
     }
+
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
