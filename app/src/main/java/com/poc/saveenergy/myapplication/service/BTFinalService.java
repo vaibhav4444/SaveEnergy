@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.poc.saveenergy.myapplication.application.SaveEnergy;
+import com.poc.saveenergy.myapplication.constants.Constants;
 import com.poc.saveenergy.myapplication.fragments.BluetoothOperationClass;
 import com.poc.saveenergy.myapplication.utils.BeaconUtils;
 import com.poc.saveenergy.myapplication.utils.Logger;
@@ -205,7 +206,7 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
                 Log.e("BtFinalService", "output stream is null");
                 return;
             }
-            String password = "";
+            String password = SaveEnergy.getInstance().getPrefs().get(Constants.PREF_KEY_PASSWORD);
             byte[] buffer = password.getBytes();
             try {
                 mmOutStream.write(buffer);
