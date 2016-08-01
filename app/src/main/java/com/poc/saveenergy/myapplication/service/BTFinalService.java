@@ -149,9 +149,10 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
         }
     }
     private void errorExit(String title, String message){
-        Toast msg = Toast.makeText(this,
-                title + " - " + message, Toast.LENGTH_SHORT);
-        msg.show();
+        Log.e("BtFinalService","title :"+title+" message:"+message);
+        //Toast msg = Toast.makeText(this,
+          //      title + " - " + message, Toast.LENGTH_SHORT);
+        //msg.show();
 
     }
     private class ReadInputThread extends Thread {
@@ -185,7 +186,7 @@ public class BTFinalService extends Service implements BluetoothAdapter.LeScanCa
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 
-                    Toast.makeText(BTFinalService.this, "Connected", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(BTFinalService.this, "Connected", Toast.LENGTH_LONG).show();
 
                 } catch (IOException e) {
                     Logger.error("TAG", "disconnected", e);
